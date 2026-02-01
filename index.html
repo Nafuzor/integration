@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Nafuzor Project</title>
-    <!-- Подключаем скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            /* Фиолетово-розовая гамма */
-            --bg-gradient: radial-gradient(circle at top left, #7c3aed, #db2777, #18181b);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --bg-gradient: radial-gradient(circle at top left, #4c1d95, #be185d, #09090b);
+            --glass-bg: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --text-color: #ffffff;
-            --text-sec: rgba(255, 255, 255, 0.6);
-            --btn-active: rgba(255, 255, 255, 0.2);
+            --text-sec: rgba(255, 255, 255, 0.5);
+            --accent: #d8b4fe;
+            --btn-active: rgba(255, 255, 255, 0.15);
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #0f0f11; /* Подложка */
+            background: #0f0f11;
             background-image: var(--bg-gradient);
             background-size: cover;
             background-attachment: fixed;
@@ -32,115 +31,203 @@
             align-items: center;
             padding-top: 20px;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Убирает синий клик на мобилках */
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
-        /* Заголовок */
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        /* --- ЭКРАН ЗАГРУЗКИ --- */
+        #loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #09090b;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
         }
 
-        h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 0;
-            letter-spacing: 0.5px;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #db2777;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        /* Общий стиль для "стеклянных" блоков */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); /* Для Safari/iOS */
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        .loader-text {
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite ease-in-out;
         }
 
-        /* Профиль */
-        .profile-container {
-            width: 90%;
-            max-width: 380px;
-            padding: 30px 20px;
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+        /* --- ОСНОВНОЙ КОНТЕНТ (скрыт по умолчанию) --- */
+        #main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- СТИЛЬ ПАНЕЛЕЙ --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        /* --- ОБНОВЛЕННЫЙ ПРОФИЛЬ --- */
+        .profile-container {
+            width: 85%; /* Чуть уже для стиля */
+            max-width: 360px;
+            padding: 25px;
             margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Выравнивание влево */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Декоративный статус справа сверху */
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #4ade80;
         }
 
         .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            border-radius: 20px; /* Квадрат с округлением смотрится современнее */
             object-fit: cover;
-            background-color: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
+            background: linear-gradient(135deg, #3b0764, #be185d);
+            border: 1px solid rgba(255,255,255,0.2);
             margin-bottom: 15px;
-            /* Если аватарки нет, показываем иконку */
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         .nickname {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
 
         .username {
             font-size: 0.95rem;
-            color: #d8b4fe; /* Светло-фиолетовый */
-            margin-bottom: 8px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 10px;
         }
 
         .userid {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-sec);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px 10px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-family: monospace;
         }
 
-        /* Секция кнопок (Инструкции) */
+        /* --- КНОПКИ --- */
         .menu-container {
             width: 90%;
             max-width: 380px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            padding-bottom: 40px;
         }
 
         .section-title {
-            margin-left: 10px;
-            font-size: 0.9rem;
+            margin-left: 5px;
+            font-size: 0.8rem;
             color: var(--text-sec);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 5px;
+            font-weight: 600;
         }
 
-        /* Сетка кнопок */
         .btn {
-            background: var(--glass-bg);
+            background: rgba(30, 30, 35, 0.6);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 1rem;
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
-            text-align: center;
-            transition: background 0.2s, transform 0.1s;
             text-decoration: none;
             display: flex;
             align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            justify-content: space-between; /* Текст слева, стрелка справа */
+            transition: all 0.2s;
+        }
+
+        .btn::after {
+            content: '›';
+            font-size: 1.4rem;
+            color: var(--text-sec);
+            margin-left: 10px;
         }
 
         .btn:active {
@@ -148,109 +235,137 @@
             transform: scale(0.98);
         }
 
-        /* Ряд с двумя кнопками */
         .row-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
+        /* Для кнопок в ряд убираем стрелочку или меняем стиль, если нужно */
+        .row-btns .btn {
+            justify-content: center;
+            text-align: center;
+        }
+        .row-btns .btn::after {
+            content: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Добро пожаловать в<br>Nafuzor Project</h1>
-    </header>
-
-    <!-- Блок профиля -->
-    <div class="glass-panel profile-container">
-        <!-- Сюда JS вставит фото или заглушку -->
-        <div id="user-avatar" class="avatar">NP</div> 
-        
-        <div id="user-name" class="nickname">Loading...</div>
-        <div id="user-username" class="username">@...</div>
-        <div id="user-id" class="userid">ID: ...</div>
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div id="loader-screen">
+        <div class="spinner"></div>
+        <div class="loader-text">Распределение потоков...</div>
     </div>
 
-    <!-- Меню Инструкции -->
-    <div class="menu-container">
-        <div class="section-title">Инструкции</div>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div id="main-content">
+        
+        <header>
+            <h1>Nafuzor Project</h1>
+        </header>
 
-        <!-- 1. Широкая кнопка -->
-        <a href="#" class="btn" onclick="alert('Тут будет инструкция добавления номера')">
-            Как добавить номер
-        </a>
+        <!-- Блок профиля -->
+        <div class="glass-panel profile-container">
+            <!-- Статус справа сверху -->
+            <div class="status-badge">
+                <div class="status-dot"></div> Online
+            </div>
 
-        <!-- 2. Две кнопки в ряд -->
-        <div class="row-btns">
-            <a href="#" class="btn" onclick="alert('Инфо о подписках')">
-                О подписках
-            </a>
-            <a href="#" class="btn" onclick="alert('Инфо о карте')">
-                О карте
-            </a>
+            <!-- Аватар слева сверху -->
+            <div id="user-avatar" class="avatar">NP</div> 
+            
+            <!-- Имя -->
+            <div id="user-name" class="nickname">Загрузка...</div>
+            
+            <!-- Юзернейм -->
+            <div id="user-username" class="username">@...</div>
+            
+            <!-- ID (можно добавить сюда еще инфу, например о подписке) -->
+            <div class="info-row">
+                <div id="user-id" class="userid">ID: ...</div>
+            </div>
         </div>
 
-        <!-- 3. Кнопка по центру (внизу) -->
-        <a href="#" class="btn" onclick="alert('Инфо о рефералке')">
-            О рефералке
-        </a>
+        <!-- Меню -->
+        <div class="menu-container">
+            <div class="section-title">Меню</div>
+
+            <a href="#" class="btn" onclick="alert('Добавить номер')">
+                Добавить номер
+            </a>
+
+            <div class="row-btns">
+                <a href="#" class="btn" onclick="alert('Мои подписки')">
+                    Подписки
+                </a>
+                <a href="#" class="btn" onclick="alert('Данные карты')">
+                    Карта
+                </a>
+            </div>
+
+            <a href="#" class="btn" onclick="alert('Реферальная система')">
+                Реферальная система
+            </a>
+        </div>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
+        tg.expand();
+        tg.setHeaderColor('#0f0f11'); 
+        tg.setBackgroundColor('#0f0f11');
 
-        // Получаем данные пользователя
+        // --- ЛОГИКА ЗАГРУЗКИ ---
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader-screen');
+            const content = document.getElementById('main-content');
+            
+            // Имитация задержки "распределения нагрузки" (2.5 секунды)
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    // Показываем контент
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0)';
+                }, 500);
+            }, 2500);
+        });
+
+        // --- ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ---
         let user = tg.initDataUnsafe.user;
 
-        // Элементы HTML
         const nameEl = document.getElementById('user-name');
         const usernameEl = document.getElementById('user-username');
         const idEl = document.getElementById('user-id');
         const avatarEl = document.getElementById('user-avatar');
 
         if (user) {
-            // Если открыто в ТГ - ставим реальные данные
-            
-            // Имя + Фамилия (если есть)
-            const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
-            nameEl.innerText = fullName;
+            // Имя
+            nameEl.innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
 
-            // Username
-            if (user.username) {
-                usernameEl.innerText = "@" + user.username;
-            } else {
-                usernameEl.innerText = ""; 
-            }
+            // Юзернейм
+            usernameEl.innerText = user.username ? "@" + user.username : "No Username";
 
             // ID
-            idEl.innerText = `ID: ${user.id}`;
+            idEl.innerText = `UID: ${user.id}`;
 
             // Аватарка
-            // ВАЖНО: Telegram не всегда отдает ссылку на фото (photo_url) из-за настроек приватности.
-            // Если ссылки нет, останется заглушка с текстом "NP".
             if (user.photo_url) {
-                avatarEl.innerHTML = `<img src="${user.photo_url}" alt="Avatar" style="width:100%; height:100%; border-radius:50%;">`;
+                avatarEl.innerHTML = `<img src="${user.photo_url}" alt="Ava" style="width:100%; height:100%; object-fit:cover; border-radius: 20px;">`;
             } else {
-                // Если нет фото, ставим инициалы
-                const initials = user.first_name.charAt(0).toUpperCase();
-                avatarEl.innerText = initials;
+                avatarEl.innerText = user.first_name.charAt(0).toUpperCase();
             }
 
         } else {
-            // Тестовый режим (если открыли просто в браузере, а не в ТГ)
-            nameEl.innerText = "Nafuzor User";
+            // Демо данные для браузера
+            nameEl.innerText = "Nafuzor Admin";
             usernameEl.innerText = "@nafuzor_demo";
-            idEl.innerText = "ID: 12345678";
-            avatarEl.style.background = "linear-gradient(45deg, #ff00cc, #333399)";
+            idEl.innerText = "UID: 880055535";
         }
-
-        // Меняем цвет хедера самого Телеграма под наш фон
-        tg.setHeaderColor('#1a1a1d'); // темный цвет
-        tg.setBackgroundColor('#1a1a1d'); 
     </script>
 </body>
 </html>
