@@ -3,67 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Glass Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Qibys Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Иконки -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #1c1c1e;
+            --accent: #007aff; /* Telegram Blue */
+            --accent-gradient: linear-gradient(90deg, #007aff, #00c6ff);
+            --gold: #ffcc00;
+            --text-main: #ffffff;
+            --text-sec: #8e8e93;
+            --danger: #ff3b30;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 80px; /* Место для нижнего меню */
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(28, 28, 30, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .user-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #333;
+            object-fit: cover;
+        }
+
+        .username {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .balance-badge {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--gold);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- Tabs Content --- */
+        .tab-content {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Cards --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        h3 { margin-top: 0; margin-bottom: 10px; font-size: 18px; }
+        p { color: var(--text-sec); font-size: 14px; margin-bottom: 15px; }
+
+        /* --- Shop Items --- */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .item {
+            background: #2c2c2e;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-icon { font-size: 30px; margin-bottom: 10px; }
+        .item-name { font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+        .item-price { color: var(--gold); font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+        
+        .buy-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .buy-btn:active { opacity: 0.7; transform: scale(0.98); }
+
+        /* --- Referral Section --- */
+        .ref-box {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .ref-link {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            width: 80%;
+            outline: none;
+            font-family: monospace;
+        }
+
+        .copy-icon {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* --- Bottom Navigation --- */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 200;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-sec);
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* --- Loader --- */
+        #loader {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s;
+        }
+    </style>
 </head>
 <body>
-    <!-- Фоновые пятна для эффекта стекла -->
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div style="color: var(--accent); font-weight: bold;">ЗАГРУЗКА...</div>
     </div>
 
-    <div class="glass-container">
-        <!-- Шапка профиля -->
-        <header class="profile-header">
-            <div class="avatar-wrapper">
-                <img id="user-avatar" src="https://via.placeholder.com/150" alt="Avatar">
-            </div>
-            <div class="user-info">
-                <h2 id="user-name">Загрузка...</h2>
-                <span class="user-tag" id="user-login">@username</span>
-            </div>
-        </header>
-
-        <!-- Статистика (Карточки) -->
-        <div class="stats-grid">
-            <div class="glass-card">
-                <span class="stat-label">Баланс</span>
-                <span class="stat-value" id="balance">0 💎</span>
-            </div>
-            <div class="glass-card">
-                <span class="stat-label">Друзья</span>
-                <span class="stat-value">0</span>
+    <!-- Header -->
+    <header class="header">
+        <div class="user-block">
+            <img id="avatar" src="https://via.placeholder.com/50" class="avatar" alt="Ava">
+            <div>
+                <div class="username" id="username">Guest</div>
+                <div style="font-size: 12px; color: #888;">ID: <span id="userid">...</span></div>
             </div>
         </div>
+        <div class="balance-badge">
+            <span id="stars-balance">0</span> ★
+        </div>
+    </header>
 
-        <!-- Секция рефералки -->
-        <div class="action-section glass-card">
-            <h3>🚀 Пригласи друга</h3>
-            <p class="desc">Получи +100 💎 за каждого приглашенного друга.</p>
-            
-            <div class="input-group">
-                <input type="text" id="ref-link" readonly value="...">
-                <button class="copy-btn" onclick="copyLink()">
-                    📋
-                </button>
-            </div>
-            
-            <button class="main-btn" onclick="shareToFriends()">
-                Отправить другу
+    <!-- Вкладка: Магазин -->
+    <div id="tab-shop" class="tab-content active">
+        <div class="card" style="background: linear-gradient(135deg, #2b0052, #180036);">
+            <h3>💎 Premium Статус</h3>
+            <p>Доступ к закрытому каналу и золотая рамка.</p>
+            <button class="buy-btn" onclick="buyItem('premium_1', 50)" style="background: var(--gold); color: black;">
+                Купить за 50 ★
             </button>
         </div>
-        
-        <!-- Техническая инфа -->
-        <div class="footer-info">
-            <p>Ваш ID: <span id="user-id">...</span></p>
+
+        <h3>Товары</h3>
+        <div class="shop-grid">
+            <div class="item">
+                <div class="item-icon">⚡️</div>
+                <div class="item-name">Энергия</div>
+                <div class="item-price">10 ★</div>
+                <button class="buy-btn" onclick="buyItem('energy_10', 10)">Купить</button>
+            </div>
+            <div class="item">
+                <div class="item-icon">🚀</div>
+                <div class="item-name">Буст x2</div>
+                <div class="item-price">25 ★</div>
+                <button class="buy-btn" onclick="buyItem('boost_2', 25)">Купить</button>
+            </div>
+            <div class="item">
+                <div class="item-icon">🎁</div>
+                <div class="item-name">Лутбокс</div>
+                <div class="item-price">100 ★</div>
+                <button class="buy-btn" onclick="buyItem('lootbox', 100)">Купить</button>
+            </div>
+            <div class="item">
+                <div class="item-icon">👑</div>
+                <div class="item-name">VIP Чат</div>
+                <div class="item-price">500 ★</div>
+                <button class="buy-btn" onclick="buyItem('vip_chat', 500)">Купить</button>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Вкладка: Профиль -->
+    <div id="tab-profile" class="tab-content">
+        <div class="card">
+            <h3>🤝 Реферальная программа</h3>
+            <p>Приглашай друзей и получай 10% от их покупок.</p>
+            <div class="ref-box">
+                <input type="text" id="ref-link" class="ref-link" readonly value="Загрузка...">
+                <span class="copy-icon" onclick="copyRef()">📋</span>
+            </div>
+            <button class="buy-btn" style="margin-top: 15px;" onclick="share()">Поделиться ссылкой</button>
+        </div>
+
+        <div class="card">
+            <h3>🎁 Ежедневный бонус</h3>
+            <p>Заходи каждый день и получай звезды бесплатно.</p>
+            <button id="daily-btn" class="buy-btn" style="background: #34c759;" onclick="claimBonus()">Забрать награду</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('shop', this)">
+            <div class="nav-icon">🛍️</div>
+            <span>Магазин</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <div class="nav-icon">👤</div>
+            <span>Профиль</span>
+        </div>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+
+        // --- НАСТРОЙКИ ---
+        const BOT_USERNAME = "QibysShopBot"; 
+        // -----------------
+
+        // Инициализация
+        const user = tg.initDataUnsafe.user;
+        
+        if (user) {
+            document.getElementById('username').innerText = user.first_name;
+            document.getElementById('userid').innerText = user.id;
+            if (user.photo_url) document.getElementById('avatar').src = user.photo_url;
+            
+            // Генерация ссылки
+            const refLink = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
+            document.getElementById('ref-link').value = refLink;
+        }
+
+        // Убираем загрузчик
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500);
+        }, 800);
+
+        // Переключение вкладок
+        function switchTab(tabName, el) {
+            // Вибрация
+            tg.HapticFeedback.selectionChanged();
+
+            // UI переключение
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Логика покупки (Telegram Stars)
+        function buyItem(itemId, price) {
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // Здесь мы отправляем данные боту, чтобы он выставил счет
+            // Бот получит сообщение через web_app_data
+            tg.sendData(JSON.stringify({
+                action: "buy",
+                item: itemId,
+                price: price
+            }));
+        }
+
+        // Копирование рефки
+        function copyRef() {
+            const copyText = document.getElementById("ref-link");
+            copyText.select();
+            document.execCommand("copy");
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showPopup({ title: "Успешно", message: "Ссылка скопирована!", buttons: [{type:"ok"}] });
+        }
+
+        // Поделиться
+        function share() {
+            const link = document.getElementById("ref-link").value;
+            tg.openTelegramLink(`https://t.me/share/url?url=${link}&text=Заходи в магазин Qibys, тут круто!`);
+        }
+
+        // Ежедневный бонус (фейк логика)
+        function claimBonus() {
+            const btn = document.getElementById('daily-btn');
+            btn.innerText = "Получено ✅";
+            btn.style.background = "#333";
+            btn.disabled = true;
+            tg.HapticFeedback.notificationOccurred('success');
+            
+            // Обновляем баланс визуально
+            let bal = document.getElementById('stars-balance');
+            bal.innerText = parseInt(bal.innerText) + 5;
+            
+            tg.showPopup({message: "Вы получили 5 бонусных звезд!"});
+        }
+    </script>
 </body>
 </html>
