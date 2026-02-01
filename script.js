@@ -1,52 +1,78 @@
 const tg = window.Telegram.WebApp;
+tg.expand(); // Растягиваем на весь экран
 
-// Сообщаем телеграму, что приложение готово
-tg.expand();
+// --- НАСТРОЙКИ ---
+const BOT_USERNAME = "QibysShopBot"; // Без @, например: MyCoolBot
+// -----------------
 
-// Настройка цветов под тему
-document.body.style.backgroundColor = tg.backgroundColor;
-
-// Получаем данные пользователя
 const user = tg.initDataUnsafe.user;
 
-// Элементы HTML
-const avatarEl = document.getElementById('user-avatar');
+// Элементы
+const avatar = document.getElementById('user-avatar');
 const nameEl = document.getElementById('user-name');
-const idEl = document.getElementById('user-id');
 const loginEl = document.getElementById('user-login');
-const refInput = document.getElementById('ref-link');
+const idEl = document.getElementById('user-id');
+const linkInput = document.getElementById('ref-link');
+const balanceEl = document.getElementById('balance');
 
-// ВСТАВЬ СЮДА ЮЗЕРНЕЙМ СВОЕГО БОТА (без @)
-const BOT_USERNAME = "ИМЯ_ТВОЕГО_БОТА"; 
-
+// Инициализация данных
 if (user) {
-    // Заполняем профиль
     nameEl.innerText = `${user.first_name} ${user.last_name || ''}`;
-    idEl.innerText = user.id;
     loginEl.innerText = user.username ? `@${user.username}` : "Скрыт";
+    idEl.innerText = user.id;
 
-    // Если у пользователя есть фото (работает не всегда из-за приватностей, но часто)
     if (user.photo_url) {
-        avatarEl.src = user.photo_url;
-    } else {
-        avatarEl.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // Заглушка
+        avatar.src = user.photo_url;
     }
 
-    // Генерируем реферальную ссылку
-    // Ссылка вида: https://t.me/BotName?start=12345
-    const link = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-    refInput.value = link;
-} else {
-    nameEl.innerText = "Откройте в Telegram";
+    // Формируем ссылку
+    const refLink = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
+    linkInput.value = refLink;
+
+    // Имитация загрузки баланса (анимация цифр)
+    animateValue(balanceEl, 0, 500, 1500);
 }
 
-// Функция копирования
+// Функция копирования с вибрацией
 function copyLink() {
-    refInput.select();
+    linkInput.select();
     document.execCommand("copy");
+    
+    // Вибрация (Haptic Feedback) - работает на телефоне
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
+    }
+
     tg.showPopup({
-        title: "Готово!",
-        message: "Ссылка скопирована в буфер обмена.",
+        title: "Скопировано",
+        message: "Ссылка готова к отправке!",
         buttons: [{type: "ok"}]
     });
+}
+
+// Функция "Поделиться" через нативное меню Телеграма
+function shareToFriends() {
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+    }
+    const link = linkInput.value;
+    const text = "Зацени этот бот! Тут дают бонусы 💎";
+    
+    // Открывает выбор чата в Telegram для отправки
+    const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+    tg.openTelegramLink(url);
+}
+
+// Анимация чисел для красоты
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start) + " 💎";
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
 }
