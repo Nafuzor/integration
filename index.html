@@ -2,297 +2,255 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quantum Club</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Nafuzor Project</title>
+    <!-- Подключаем скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Фиолетово-розовая гамма */
+            --bg-gradient: radial-gradient(circle at top left, #7c3aed, #db2777, #18181b);
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.6);
-            --accent: #007aff;
-            --danger: #ff3b30;
+            --text-color: #ffffff;
+            --text-sec: rgba(255, 255, 255, 0.6);
+            --btn-active: rgba(255, 255, 255, 0.2);
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
-            background: #000;
-            color: var(--text-primary);
-            overflow: hidden; /* Чтобы не скроллилось лишнее */
-            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #0f0f11; /* Подложка */
+            background-image: var(--bg-gradient);
+            background-size: cover;
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        /* --- Анимированный фон (Живые градиенты) --- */
-        .background {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #000000 100%);
-        }
-        
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out;
-        }
-        .orb-1 { width: 300px; height: 300px; background: #4f46e5; top: -50px; left: -50px; animation-delay: 0s; }
-        .orb-2 { width: 250px; height: 250px; background: #ec4899; bottom: -50px; right: -50px; animation-delay: 3s; }
-        .orb-3 { width: 200px; height: 200px; background: #06b6d4; top: 40%; left: 30%; animation-delay: 5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 40px); }
-        }
-
-        /* --- Контейнер --- */
-        .app-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+            padding-top: 20px;
             box-sizing: border-box;
-            backdrop-filter: blur(10px); /* Легкий блюр на весь экран */
+            -webkit-tap-highlight-color: transparent; /* Убирает синий клик на мобилках */
         }
 
-        /* --- Карточки (Стекло) --- */
-        .glass-card {
+        /* Заголовок */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        /* Общий стиль для "стеклянных" блоков */
+        .glass-panel {
             background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); /* Для Safari/iOS */
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        /* --- Профиль --- */
-        .profile-header {
+        /* Профиль */
+        .profile-container {
+            width: 90%;
+            max-width: 380px;
+            padding: 30px 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .avatar {
-            width: 60px; height: 60px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
+            object-fit: cover;
+            background-color: rgba(255,255,255,0.2);
             border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(0,0,0,0.5);
-        }
-
-        .user-info h1 {
-            margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;
-        }
-        
-        .status-badge {
-            font-size: 12px;
-            background: linear-gradient(90deg, #ffd700, #ffaa00);
-            color: black;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 5px;
-        }
-
-        /* --- Тапалка (Кнопка в центре) --- */
-        .clicker-section {
-            flex-grow: 1;
+            margin-bottom: 15px;
+            /* Если аватарки нет, показываем иконку */
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-        }
-
-        .score-display {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .tap-btn {
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 0 50px rgba(79, 70, 229, 0.4), inset 0 0 20px rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            display: flex;
             justify-content: center;
-            align-items: center;
             font-size: 40px;
         }
 
-        .tap-btn:active {
-            transform: scale(0.92);
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.6);
+        .nickname {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
         }
 
-        /* --- Нижняя панель (Рефералка) --- */
-        .referral-panel {
-            margin-top: auto;
+        .username {
+            font-size: 0.95rem;
+            color: #d8b4fe; /* Светло-фиолетовый */
+            margin-bottom: 8px;
         }
 
-        .ref-title {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
+        .userid {
+            font-size: 0.75rem;
+            color: var(--text-sec);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        /* Секция кнопок (Инструкции) */
+        .menu-container {
+            width: 90%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: var(--text-sec);
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 5px;
         }
 
-        .ref-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 14px;
+        /* Сетка кнопок */
+        .btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 16px;
             border-radius: 16px;
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-invite {
-            background: #ffffff;
-            color: #000000;
-        }
-        
-        .btn-copy {
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
+            text-align: center;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
-        .action-btn:active { opacity: 0.7; }
+        .btn:active {
+            background: var(--btn-active);
+            transform: scale(0.98);
+        }
+
+        /* Ряд с двумя кнопками */
+        .row-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
 
     </style>
 </head>
 <body>
-    <!-- Фоновая анимация -->
-    <div class="background">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
 
-    <div class="app-container">
+    <header>
+        <h1>Добро пожаловать в<br>Nafuzor Project</h1>
+    </header>
+
+    <!-- Блок профиля -->
+    <div class="glass-panel profile-container">
+        <!-- Сюда JS вставит фото или заглушку -->
+        <div id="user-avatar" class="avatar">NP</div> 
         
-        <!-- Карточка профиля -->
-        <div class="glass-card profile-header">
-            <img id="avatar" src="https://via.placeholder.com/100" class="avatar" alt="User">
-            <div class="user-info">
-                <h1 id="username">Загрузка...</h1>
-                <div class="status-badge">QUANTUM MEMBER</div>
-            </div>
-        </div>
-
-        <!-- Секция майнинга (Тапалка) -->
-        <div class="clicker-section">
-            <div id="score" class="score-display">0</div>
-            <div class="tap-btn" id="tap-btn" onclick="tap()">
-                ⚛️
-            </div>
-            <p style="color: rgba(255,255,255,0.4); margin-top: 20px; font-size: 13px;">Тапай и получай кванты</p>
-        </div>
-
-        <!-- Реферальная система -->
-        <div class="glass-card referral-panel">
-            <div class="ref-title">Пригласи друга</div>
-            <div class="ref-actions">
-                <button class="action-btn btn-invite" onclick="inviteFriend()">Отправить</button>
-                <button class="action-btn btn-copy" onclick="copyLink()">Скопировать</button>
-            </div>
-        </div>
+        <div id="user-name" class="nickname">Loading...</div>
+        <div id="user-username" class="username">@...</div>
+        <div id="user-id" class="userid">ID: ...</div>
     </div>
 
-    <!-- Скрытое поле для ссылки -->
-    <input type="text" id="ref-link" style="display:none;">
+    <!-- Меню Инструкции -->
+    <div class="menu-container">
+        <div class="section-title">Инструкции</div>
+
+        <!-- 1. Широкая кнопка -->
+        <a href="#" class="btn" onclick="alert('Тут будет инструкция добавления номера')">
+            Как добавить номер
+        </a>
+
+        <!-- 2. Две кнопки в ряд -->
+        <div class="row-btns">
+            <a href="#" class="btn" onclick="alert('Инфо о подписках')">
+                О подписках
+            </a>
+            <a href="#" class="btn" onclick="alert('Инфо о карте')">
+                О карте
+            </a>
+        </div>
+
+        <!-- 3. Кнопка по центру (внизу) -->
+        <a href="#" class="btn" onclick="alert('Инфо о рефералке')">
+            О рефералке
+        </a>
+    </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // На весь экран
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Расширяем на весь экран
 
-        // !!! ВПИШИ СЮДА ЮЗЕРНЕЙМ СВОЕГО БОТА (БЕЗ @) !!!
-        const BOT_USERNAME = "QibysShopBot"; 
-        // ===============================================
+        // Получаем данные пользователя
+        let user = tg.initDataUnsafe.user;
 
-        // Получаем данные
-        const user = tg.initDataUnsafe.user;
-        const scoreEl = document.getElementById('score');
-        
-        // Локальное хранилище очков (чтобы не сбрасывались при закрытии)
-        let score = localStorage.getItem('quantum_score') || 0;
-        scoreEl.innerText = score;
+        // Элементы HTML
+        const nameEl = document.getElementById('user-name');
+        const usernameEl = document.getElementById('user-username');
+        const idEl = document.getElementById('user-id');
+        const avatarEl = document.getElementById('user-avatar');
 
-        // Инициализация профиля
         if (user) {
-            document.getElementById('username').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-            if (user.photo_url) {
-                document.getElementById('avatar').src = user.photo_url;
-            }
+            // Если открыто в ТГ - ставим реальные данные
             
-            // Генерируем ссылку: t.me/Bot?start=12345
-            const link = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-            document.getElementById('ref-link').value = link;
+            // Имя + Фамилия (если есть)
+            const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
+            nameEl.innerText = fullName;
+
+            // Username
+            if (user.username) {
+                usernameEl.innerText = "@" + user.username;
+            } else {
+                usernameEl.innerText = ""; 
+            }
+
+            // ID
+            idEl.innerText = `ID: ${user.id}`;
+
+            // Аватарка
+            // ВАЖНО: Telegram не всегда отдает ссылку на фото (photo_url) из-за настроек приватности.
+            // Если ссылки нет, останется заглушка с текстом "NP".
+            if (user.photo_url) {
+                avatarEl.innerHTML = `<img src="${user.photo_url}" alt="Avatar" style="width:100%; height:100%; border-radius:50%;">`;
+            } else {
+                // Если нет фото, ставим инициалы
+                const initials = user.first_name.charAt(0).toUpperCase();
+                avatarEl.innerText = initials;
+            }
+
+        } else {
+            // Тестовый режим (если открыли просто в браузере, а не в ТГ)
+            nameEl.innerText = "Nafuzor User";
+            usernameEl.innerText = "@nafuzor_demo";
+            idEl.innerText = "ID: 12345678";
+            avatarEl.style.background = "linear-gradient(45deg, #ff00cc, #333399)";
         }
 
-        // Функция тапа
-        function tap() {
-            // Вибрация (самая приятная для тапа)
-            tg.HapticFeedback.impactOccurred('medium');
-
-            // Увеличиваем счет
-            score++;
-            scoreEl.innerText = score;
-            localStorage.setItem('quantum_score', score);
-
-            // Анимация кнопки (уже есть в CSS через :active, но можно усилить JS)
-            const btn = document.getElementById('tap-btn');
-            btn.style.transform = "scale(0.95)";
-            setTimeout(() => { btn.style.transform = "scale(1)"; }, 50);
-        }
-
-        // Пригласить друга (открывает выбор чата)
-        function inviteFriend() {
-            const link = document.getElementById('ref-link').value;
-            const msg = "🚀 Вступай в Quantum Club! Жми кнопку и забирай бонус.";
-            const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`;
-            tg.openTelegramLink(url);
-        }
-
-        // Скопировать ссылку
-        function copyLink() {
-            const link = document.getElementById('ref-link');
-            // Временный инпут для копирования (т.к. основной скрыт)
-            const tempInput = document.createElement("input");
-            tempInput.value = link.value;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-
-            tg.HapticFeedback.notificationOccurred('success');
-            tg.showPopup({ title: "Успешно", message: "Твоя реферальная ссылка скопирована!" });
-        }
+        // Меняем цвет хедера самого Телеграма под наш фон
+        tg.setHeaderColor('#1a1a1d'); // темный цвет
+        tg.setBackgroundColor('#1a1a1d'); 
     </script>
 </body>
 </html>
