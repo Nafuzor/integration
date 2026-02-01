@@ -3,62 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой WebApp</title>
-    <!-- Подключаем скрипт телеграма -->
+    <title>Мой Профиль</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключаем скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            background-color: var(--tg-theme-bg-color, #fff);
-            color: var(--tg-theme-text-color, #000);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: sans-serif;
-        }
-        button {
-            padding: 15px 30px;
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #fff);
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        input {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-    </style>
 </head>
 <body>
+    <div class="container">
+        <!-- Блок профиля -->
+        <div class="profile-card">
+            <img id="user-avatar" src="https://via.placeholder.com/100" alt="Avatar" class="avatar">
+            <h2 id="user-name">Загрузка...</h2>
+            <p class="user-detail">ID: <span id="user-id">...</span></p>
+            <p class="user-detail">Username: <span id="user-login">@...</span></p>
+        </div>
 
-    <h1>Привет, Бро!</h1>
-    <p>Введи данные для бота:</p>
-    
-    <input type="text" id="dataInput" placeholder="Напиши сюда что-нибудь">
-    <button onclick="sendDataToBot()">Отправить в Телеграм</button>
-
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем на весь экран
-
-        function sendDataToBot() {
-            let val = document.getElementById("dataInput").value;
+        <!-- Блок рефералки -->
+        <div class="referral-section">
+            <h3>🤝 Реферальная программа</h3>
+            <p>Приглашай друзей и получай бонусы! Твоя уникальная ссылка:</p>
             
-            if(val.trim() === "") {
-                alert("Напиши хоть что-то!");
-                return;
-            }
+            <div class="ref-link-box">
+                <input type="text" id="ref-link" readonly value="Загрузка...">
+                <button onclick="copyLink()">📋</button>
+            </div>
+            <p class="hint">Нажми кнопку, чтобы скопировать.</p>
+        </div>
+    </div>
 
-            // Самая главная строка: отправляем данные боту
-            tg.sendData(val); 
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
