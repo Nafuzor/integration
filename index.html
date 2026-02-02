@@ -11,29 +11,31 @@
         :root {
             --bg-color: #000000;
             --glass-bg: rgba(28, 28, 30, 0.65);
+            --glass-bg-active: rgba(44, 44, 46, 0.8);
             --glass-border: rgba(255, 255, 255, 0.12);
             --primary: #0a84ff;
+            --accent: #bf5af2;
             --success: #30d158;
-            --danger: #ff453a;
             --warning: #ffd60a;
+            --danger: #ff453a;
             --text-main: #ffffff;
             --text-sec: #8e8e93;
-            --card-radius: 20px;
+            --card-radius: 22px;
         }
 
         body {
             margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Outfit', sans-serif;
             background: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #000000 80%);
+            background-image: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #000000 90%);
             color: var(--text-main);
             min-height: 100vh;
             overflow: hidden;
-            user-select: none; -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        /* ЗАГРУЗЧИК */
+        /* --- ЗАГРУЗЧИК --- */
         #loader-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 10000;
@@ -41,11 +43,7 @@
             transition: opacity 0.5s ease;
         }
         .apple-spinner { width: 40px; height: 40px; position: relative; animation: rotate 1s linear infinite; }
-        .spinner-blade {
-            position: absolute; left: 44.5%; top: 0; width: 11%; height: 27%;
-            border-radius: 50px; background: #8e8e93; transform-origin: 50% 185%;
-            animation: fade 1s linear infinite;
-        }
+        .spinner-blade { position: absolute; left: 44.5%; top: 0; width: 11%; height: 27%; border-radius: 50px; background: #8e8e93; transform-origin: 50% 185%; animation: fade 1s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fade { 0% { opacity: 1; } 100% { opacity: 0.25; } }
         .spinner-blade:nth-child(1) { transform: rotate(0deg); animation-delay: -1s; }
@@ -60,10 +58,9 @@
         .spinner-blade:nth-child(10) { transform: rotate(270deg); animation-delay: -0.1s; }
         .spinner-blade:nth-child(11) { transform: rotate(300deg); animation-delay: -0.08s; }
         .spinner-blade:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
-        .loader-text { margin-top: 20px; font-weight: 600; font-size: 1.2rem; opacity: 0; animation: fadeIn 2s forwards; }
-        @keyframes fadeIn { to { opacity: 1; } }
 
-        /* СТРУКТУРА */
+        /* --- СТРУКТУРА --- */
+        #app-container { width: 100%; height: 100vh; position: relative; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .page {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0;
             padding: 20px 16px 80px 16px; box-sizing: border-box;
@@ -76,81 +73,160 @@
         .page-hidden-left { transform: translateX(-30%); opacity: 0; z-index: 1; pointer-events: none; }
         .page-hidden-right { transform: translateX(100%); opacity: 0; z-index: 1; pointer-events: none; }
 
-        header { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; height: 44px; margin-bottom: 20px; flex-shrink: 0; }
-        h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; margin: 0; }
-        .back-btn { position: absolute; left: 0; top: 0; height: 100%; display: flex; align-items: center; color: var(--primary); font-size: 17px; cursor: pointer; gap: 5px; }
+        header { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; height: 44px; margin-bottom: 20px; flex-shrink: 0; max-width: 500px; }
+        h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; margin: 0; color: #fff; }
+        .back-btn { position: absolute; left: 0; top: 0; height: 100%; display: flex; align-items: center; color: var(--primary); font-size: 17px; cursor: pointer; gap: 5px; padding-right: 20px; }
 
         .glass-card {
             width: 100%; max-width: 400px;
             background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border); border-radius: var(--card-radius);
-            padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 20px; margin-bottom: 16px; position: relative;
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
         }
 
-        .profile-header { display: flex; align-items: center; gap: 15px; position: relative; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #333, #111); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); }
+        /* --- ГЛАВНАЯ --- */
+        .profile-header { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #1c1c1e, #3a3a3c); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); color: #fff; }
         .profile-info { flex: 1; }
-        .profile-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
-        .profile-balance { font-size: 0.9rem; color: var(--text-sec); }
-        .balance-val { color: var(--text-main); font-weight: 600; }
+        .profile-name { font-size: 17px; font-weight: 600; margin-bottom: 4px; color: #fff; }
+        .profile-balance { font-size: 13px; color: var(--text-sec); font-family: monospace; }
         
+        /* СТАТУС БЕЙДЖ */
         .status-badge {
-            position: absolute; top: 0; right: 0; padding: 6px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: 600; text-transform: uppercase;
+            position: absolute; top: 20px; right: 20px; padding: 5px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
             backdrop-filter: blur(10px); transition: all 0.3s ease;
         }
         .status-full { background: rgba(48, 209, 88, 0.15); color: var(--success); border: 1px solid rgba(48, 209, 88, 0.3); }
         .status-stop { background: rgba(255, 69, 58, 0.15); color: var(--danger); border: 1px solid rgba(255, 69, 58, 0.3); }
 
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; }
-        .menu-btn {
+        .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin-top: 10px; }
+        .nav-btn {
             background: var(--glass-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: var(--card-radius);
-            padding: 16px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between;
-            cursor: pointer; transition: transform 0.1s;
+            border: 1px solid var(--glass-border); border-radius: 18px;
+            padding: 16px; height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: background 0.2s; text-align: center;
         }
-        .menu-btn:active { transform: scale(0.97); background: rgba(255,255,255,0.1); }
-        .menu-btn.full { grid-column: span 2; flex-direction: row; align-items: center; min-height: 70px; }
-        .menu-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: var(--primary); margin-bottom: 10px; }
-        .menu-btn.full .menu-icon { margin-bottom: 0; margin-right: 15px; }
-        .menu-title { font-weight: 600; font-size: 15px; }
-        .menu-desc { font-size: 12px; color: var(--text-sec); margin-top: 4px; }
+        .nav-btn:active { background: var(--glass-bg-active); }
+        .nav-icon { font-size: 28px; margin-bottom: 10px; color: var(--primary); }
+        .nav-title { font-size: 15px; font-weight: 600; }
+        .nav-desc { font-size: 12px; color: var(--text-sec); margin-top: 4px; }
 
-        .ios-list { width: 100%; max-width: 400px; background: var(--glass-bg); backdrop-filter: blur(20px); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
-        .ios-item { padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 16px; }
-        .ios-item:last-child { border-bottom: none; }
-        .ios-label { color: var(--text-sec); }
-        .ios-val { font-weight: 500; color: var(--text-main); text-align: right; }
+        /* --- КНОПКИ МЕНЮ --- */
+        .menu-list { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+        .menu-item {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 18px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .menu-item:active { transform: scale(0.98); background: var(--glass-bg-active); }
+        .menu-item-icon { color: var(--primary); width: 24px; height: 24px; }
+        .menu-text { flex: 1; font-weight: 500; font-size: 16px; }
+        .chevron { color: var(--text-sec); opacity: 0.5; }
 
-        .action-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* --- ЭЛЕМЕНТЫ ДЕЙСТВИЙ (МЕНЮ) --- */
+        .cat-row { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
+        .cat-btn {
+            flex: 1; padding: 15px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); border-radius: 14px;
+            text-align: center; font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.2s;
+        }
+        .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .input-wrap { width: 100%; margin-bottom: 20px; }
+        .glass-input {
+            width: 100%; padding: 16px; background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border); border-radius: 14px;
+            color: white; font-size: 17px; outline: none; box-sizing: border-box;
+            font-family: monospace; letter-spacing: 1px;
+        }
+        .glass-input:focus { border-color: var(--primary); }
+
+        .action-btn {
+            width: 100%; padding: 16px; background: var(--primary);
+            color: white; border: none; border-radius: 14px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
         .action-btn:active { opacity: 0.8; transform: scale(0.98); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+
+        .filter-scroll {
+            display: flex; gap: 10px; overflow-x: auto; width: 100%; padding-bottom: 10px;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-chip {
+            padding: 8px 16px; background: rgba(255,255,255,0.1); border-radius: 20px;
+            font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid transparent;
+        }
+        .filter-chip.active { background: rgba(255,255,255,0.2); border-color: var(--primary); color: var(--primary); }
+
+        .num-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .num-item:last-child { border-bottom: none; }
+        .num-val { font-family: monospace; font-size: 15px; }
+        .num-status { font-size: 12px; padding: 4px 8px; border-radius: 6px; }
         
-        .custom-input { width: 100%; padding: 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-size: 18px; outline: none; box-sizing: border-box; }
-        .custom-input:focus { border-color: var(--primary); }
+        .st-work { background: rgba(10, 132, 255, 0.15); color: var(--primary); }
+        .st-wait { background: rgba(255, 214, 10, 0.15); color: var(--warning); }
+        .st-ok { background: rgba(48, 209, 88, 0.15); color: var(--success); }
+        .st-block { background: rgba(255, 69, 58, 0.15); color: var(--danger); }
 
-        .cat-selector { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-        .cat-btn { flex: 1; padding: 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .cat-btn.selected { border-color: var(--primary); background: rgba(10, 132, 255, 0.15); }
+        .bank-card {
+            width: 100%; height: 200px; border-radius: 20px;
+            background: linear-gradient(135deg, #1c1c1e, #000);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 25px; box-sizing: border-box; position: relative;
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+        .card-brand { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #fff; }
+        .card-number { font-size: 22px; font-family: monospace; letter-spacing: 2px; color: #fff; margin-top: 10px; }
+        .card-details { display: flex; justify-content: space-between; margin-top: 20px; }
+        .card-label { font-size: 11px; color: #888; text-transform: uppercase; }
+        .card-val { font-size: 15px; color: #fff; font-weight: 600; font-family: monospace; }
 
-        /* КОПИРОВАНИЕ */
-        .copy-row { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 14px; border-radius: 12px; margin-top: 8px; cursor: pointer; }
-        .selectable { user-select: text; -webkit-user-select: text; }
-        .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) scale(0.9); background: rgba(40,40,40,0.9); backdrop-filter: blur(10px); color: white; padding: 12px 24px; border-radius: 30px; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 2000; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
-        .toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
-
-        /* ДЛЯ ИНСТРУКЦИЙ */
-        .sub-accordion { background: rgba(255,255,255,0.05); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
-        .sub-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; }
-        .sub-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.2); }
-        .sub-body.open { max-height: 500px; }
-        .sub-content { padding: 15px; font-size: 14px; color: var(--text-sec); line-height: 1.5; }
+        .content-text { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,0.9); margin-bottom: 15px; }
         .styled-list { list-style: none; padding: 0; margin: 0; }
-        .styled-list li { position: relative; padding-left: 15px; margin-bottom: 8px; }
-        .styled-list li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
-        .icon-row { display: flex; gap: 10px; margin-bottom: 15px; font-size: 14px; color: var(--text-sec); }
-        .video-wrapper { width: 100%; border-radius: 14px; overflow: hidden; margin-bottom: 15px; background: #000; border: 1px solid rgba(255,255,255,0.1); }
+        .styled-list li { position: relative; padding-left: 24px; margin-bottom: 12px; font-size: 15px; color: var(--text-sec); }
+        .styled-list li::before { content: '•'; position: absolute; left: 5px; color: var(--primary); font-weight: bold; }
+        .video-box { width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: #000; border: 1px solid var(--glass-border); }
         video { width: 100%; display: block; }
+        
+        .toast {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(50, 50, 50, 0.9); backdrop-filter: blur(10px);
+            color: white; padding: 10px 20px; border-radius: 30px;
+            font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .copy-trigger { cursor: pointer; border-bottom: 1px dashed rgba(255,255,255,0.3); }
+        .copy-trigger:active { color: var(--primary); border-color: var(--primary); }
+
+        .accordion { background: rgba(255,255,255,0.03); border-radius: 16px; margin-bottom: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .acc-head { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px; }
+        .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.2); }
+        .acc-body.open { max-height: 500px; }
+        .acc-content { padding: 16px; font-size: 14px; color: var(--text-sec); line-height: 1.6; }
+
+        /* Контейнер контента */
+        .content-box { width: 90%; max-width: 380px; }
+        .copy-block {
+            background: rgba(44, 44, 46, 0.5); border-radius: 12px;
+            padding: 12px; margin-top: 10px; cursor: pointer;
+            border: 1px dashed rgba(255,255,255,0.15); text-align: center;
+            transition: 0.2s;
+        }
+        .copy-block:active { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+        .copy-text { color: var(--primary); font-family: -apple-system-monospaced, monospace; font-size: 14px; }
+        .copy-hint { font-size: 11px; color: var(--text-sec); margin-top: 4px; }
+        .secret-method { margin-top: 25px; padding: 15px; border-radius: 16px; background: linear-gradient(135deg, rgba(10, 132, 255, 0.1), rgba(191, 90, 242, 0.1)); border: 1px solid rgba(255,255,255,0.1); }
+
     </style>
 </head>
 <body>
@@ -162,14 +238,14 @@
             <div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div>
             <div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div>
         </div>
-        <div class="loader-text">Nafuzor Project</div>
+        <div style="margin-top:20px; font-weight:600; color:#888;">Nafuzor Project</div>
     </div>
 
-    <div id="toast" class="toast"><span>Скопировано</span></div>
+    <div id="toast" class="toast">Скопировано</div>
 
     <div id="app-container">
-
-        <!-- ===== ГЛАВНАЯ ===== -->
+        
+        <!-- ===== 1. ГЛАВНАЯ ===== -->
         <div id="page-home" class="page page-active">
             <header><h1>NAFUZOR PROJECT</h1></header>
 
@@ -179,243 +255,248 @@
                     <div id="user-avatar" class="avatar">NP</div>
                     <div class="profile-info">
                         <div id="user-name" class="profile-name">Загрузка...</div>
-                        <div class="profile-balance">Баланс: <span id="profile-balance-val" class="balance-val">0 ₽</span></div>
+                        <div class="profile-balance">Баланс: <span id="profile-balance-val" style="color:#fff; font-weight:600;">0 ₽</span></div>
                     </div>
                 </div>
             </div>
 
-            <div style="margin-top: 10px; width: 100%; max-width: 400px;">
-                <button class="action-btn" onclick="navigateTo('page-menu')">
-                    Открыть меню
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-            
-            <div style="margin-top: 15px; width: 100%; max-width: 400px; text-align: center;">
-                <span class="menu-desc" onclick="navigateTo('page-instructions')" style="text-decoration: underline; cursor:pointer;">Инструкции и помощь</span>
-            </div>
-        </div>
-
-        <!-- ===== МЕНЮ (ПЕРЕРАБОТАНО ПО ТЗ) ===== -->
-        <div id="page-menu" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Меню</h1>
-            </header>
-            <div class="menu-grid">
-                <!-- Добавить номер + Мои номера -->
-                <div class="menu-btn" onclick="navigateToAddNumber()">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16m8-8H4"></path></svg></div><span class="menu-title">Добавить номер</span>
+            <div class="nav-row">
+                <div class="nav-btn" onclick="navigateTo('page-instructions')">
+                    <div class="nav-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div>
+                    <div class="nav-title">Инструкции</div>
+                    <div class="nav-desc">База знаний</div>
                 </div>
-                <div class="menu-btn" onclick="navigateTo('page-my-nums')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div><span class="menu-title">Мои номера</span>
-                </div>
-                <!-- Рефералка + Карта -->
-                <div class="menu-btn" onclick="navigateTo('page-ref')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div><span class="menu-title">Рефералка</span>
-                </div>
-                <div class="menu-btn" onclick="navigateTo('page-card')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div><span class="menu-title">Карта</span>
-                </div>
-                <!-- Подписка (Полная ширина) -->
-                <div class="menu-btn full" onclick="navigateTo('page-sub')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg></div>
-                    <div><span class="menu-title">Подписка</span><div class="menu-desc">Управление тарифом</div></div>
+                <div class="nav-btn" onclick="navigateTo('page-menu')">
+                    <div class="nav-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg></div>
+                    <div class="nav-title">Открыть меню</div>
+                    <div class="nav-desc">Действия</div>
                 </div>
             </div>
         </div>
 
-        <!-- ДОБАВИТЬ НОМЕР -->
-        <div id="page-add" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Добавить номер</h1>
-            </header>
-            <div class="input-label" style="text-align:center; margin-bottom:15px; color:#888;">Выберите категорию</div>
-            <div class="cat-selector">
-                <div class="cat-btn" id="cat-max" onclick="selectCategory('MAX')"><span class="cat-name">MAX 🔵</span></div>
-                <div class="cat-btn" id="cat-wa" onclick="selectCategory('WhatsApp')"><span class="cat-name">WhatsApp 🟢</span></div>
-            </div>
-            <div id="add-input-container" style="display:none; width: 100%; max-width: 400px;">
-                <div class="input-group" style="margin-bottom:20px;">
-                    <input type="tel" id="phone-input" class="custom-input" placeholder="+7...">
-                </div>
-                <button class="action-btn" onclick="submitNumber()">Добавить</button>
-            </div>
-        </div>
-
-        <!-- МОИ НОМЕРА (Фильтры + Список) -->
-        <div id="page-my-nums" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Мои номера</h1>
-            </header>
-            <div class="menu-grid" style="margin-bottom: 20px;">
-                <div class="menu-btn" onclick="filterNumbers('В работе')">
-                    <div class="menu-icon" style="color:var(--primary)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div><span class="menu-title">⚙️ В работе</span>
-                </div>
-                <div class="menu-btn" onclick="filterNumbers('Ожидает')">
-                    <div class="menu-icon" style="color:var(--warning)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><span class="menu-title">⏳ Ожидает</span>
-                </div>
-                <div class="menu-btn" onclick="filterNumbers('Успех')">
-                    <div class="menu-icon" style="color:var(--success)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><span class="menu-title">✅ Успех</span>
-                </div>
-                <div class="menu-btn" onclick="filterNumbers('Блок')">
-                    <div class="menu-icon" style="color:var(--danger)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg></div><span class="menu-title">⛔ Блок</span>
-                </div>
-            </div>
-            <div id="nums-list" class="ios-list" style="display:none; background:transparent;"></div>
-            <div id="nums-empty" style="color: var(--text-sec); text-align: center; margin-top: 20px;">Выберите категорию</div>
-        </div>
-
-        <!-- РЕФЕРАЛКА -->
-        <div id="page-ref" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Реферальная система</h1>
-            </header>
-            <div class="glass-card">
-                <div style="font-size: 14px; color: var(--text-sec); margin-bottom: 10px;">За каждую покупку друга вы получаете <span style="color:var(--success); font-weight:700;">15%</span> от суммы заказа!</div>
-                <div class="ios-list" style="margin-bottom: 15px; background: rgba(0,0,0,0.2);">
-                    <div class="ios-item"><span class="ios-label">Вы пригласили:</span><span class="ios-val" id="ref-count">0</span></div>
-                </div>
-                <div class="input-label" style="color:#888; font-size:14px; margin-bottom:5px;">Твоя ссылка:</div>
-                <div class="copy-row" onclick="copyRefLink()">
-                    <div id="ref-link-text" class="selectable" style="flex:1; font-size:13px; font-family:monospace; color:var(--primary); overflow:hidden; white-space:nowrap;">...</div>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                </div>
-            </div>
-            <button class="action-btn" onclick="shareLink()">Поделиться</button>
-        </div>
-
-        <!-- КАРТА -->
-        <div id="page-card" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Карта</h1>
-            </header>
-            <div class="glass-card" style="background: linear-gradient(135deg, #1c1c1e, #000); border: 1px solid rgba(255,255,255,0.15);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><span style="font-weight:700; font-size:18px;">NAFUZOR</span></div>
-                <div style="margin-bottom:15px;">
-                    <div style="font-size:12px; color:#888;">Номер карты</div>
-                    <div class="selectable" id="card-num" style="font-family:monospace; font-size:20px; letter-spacing:2px; margin-top:4px;">****</div>
-                </div>
-                <div style="display:flex; justify-content:space-between;">
-                    <div><div style="font-size:12px; color:#888;">Баланс</div><div id="card-bal" style="font-size:16px; font-weight:600;">0.00 ₽</div></div>
-                    <div><div style="font-size:12px; color:#888;">CVV</div><div class="selectable" id="card-cvv" style="font-size:16px; font-weight:600;">***</div></div>
-                </div>
-                <div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:12px; color:#666;">Дата: <span id="card-date">--.--.--</span></div>
-            </div>
-            <button class="action-btn btn-outline" onclick="showApiToken()">Api токен</button>
-        </div>
-
-        <!-- ПОДПИСКА -->
-        <div id="page-sub" class="page page-hidden-right">
-            <header>
-                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
-                <h1>Подписка</h1>
-            </header>
-            <div class="glass-card" style="text-align:center;">
-                <div style="font-size:40px; margin-bottom:10px;">💎</div>
-                <div style="font-size:14px; color:var(--text-sec);">Ваша текущая подписка</div>
-                <div id="user-sub-name" style="font-size:24px; font-weight:700; color:var(--primary); margin:10px 0;">...</div>
-            </div>
-        </div>
-
-        <!-- ГЛАВНОЕ МЕНЮ ИНСТРУКЦИЙ -->
+        <!-- ===== 2. ИНСТРУКЦИИ (МЕНЮ) ===== -->
         <div id="page-instructions" class="page page-hidden-right">
             <header>
                 <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
                 <h1>Инструкции</h1>
             </header>
-            
-            <div class="menu-grid">
-                <div class="menu-btn full" onclick="navigateTo('page-instr-add')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                    <div><span class="menu-title">Как добавить номер</span></div>
+            <div class="menu-list">
+                <div class="menu-item" onclick="navigateTo('page-instr-add')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                    <div class="menu-text">Как добавить номер</div><div class="chevron">›</div>
                 </div>
-                <div class="menu-btn" onclick="navigateTo('page-instr-subs')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div><span class="menu-title">Подписки</span>
+                <div class="menu-item" onclick="navigateTo('page-instr-subs')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg></div>
+                    <div class="menu-text">О Подписках</div><div class="chevron">›</div>
                 </div>
-                <div class="menu-btn" onclick="navigateTo('page-instr-ref')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div><span class="menu-title">Рефералка</span>
+                <div class="menu-item" onclick="navigateTo('page-instr-ref')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                    <div class="menu-text">О рефералке</div><div class="chevron">›</div>
                 </div>
-                <div class="menu-btn" onclick="navigateTo('page-instr-card')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div><span class="menu-title">Карта</span>
+                <div class="menu-item" onclick="navigateTo('page-instr-card')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div>
+                    <div class="menu-text">О карте</div><div class="chevron">›</div>
                 </div>
-                <div class="menu-btn" onclick="navigateTo('page-instr-limits')">
-                    <div class="menu-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div><span class="menu-title">Лимиты</span>
+                <div class="menu-item" onclick="navigateTo('page-instr-balance')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a1 1 0 11-2 0 1 1 0 012 0z"></path></svg></div>
+                    <div class="menu-text">Про баланс</div><div class="chevron">›</div>
+                </div>
+                <div class="menu-item" onclick="navigateTo('page-instr-limits')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div>
+                    <div class="menu-text">Системные ограничения</div><div class="chevron">›</div>
                 </div>
             </div>
         </div>
 
-        <!-- СТРАНИЦЫ ИНСТРУКЦИЙ (КОНТЕНТ) -->
+        <!-- ===== 3. МЕНЮ ДЕЙСТВИЙ (ФУНКЦИОНАЛ) ===== -->
+        <div id="page-menu" class="page page-hidden-right">
+            <header>
+                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
+                <h1>Меню</h1>
+            </header>
+            <div class="menu-list">
+                <div class="menu-item" onclick="navigateToAddNumber()">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg></div>
+                    <div class="menu-text">Добавить номер</div><div class="chevron">›</div>
+                </div>
+                <div class="menu-item" onclick="navigateTo('page-act-nums')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div>
+                    <div class="menu-text">Мои номера</div><div class="chevron">›</div>
+                </div>
+                <div class="menu-item" onclick="navigateTo('page-act-ref')">
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                    <div class="menu-text">Рефералка</div><div class="chevron">›</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.1 ДЕЙСТВИЕ: ДОБАВИТЬ НОМЕР -->
+        <div id="page-act-add" class="page page-hidden-right">
+            <header>
+                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
+                <h1>Добавить номер</h1>
+            </header>
+            <div class="content-box">
+                <div style="text-align:center; margin-bottom:15px; color:#888;">Выберите категорию</div>
+                <div class="cat-row">
+                    <div class="cat-btn active" id="cat-max" onclick="selectCat('MAX')">MAX 🔵</div>
+                    <div class="cat-btn" id="cat-wa" onclick="selectCat('WA')">WhatsApp 🟢</div>
+                </div>
+                <div class="input-wrap">
+                    <input type="tel" id="phone-input" class="glass-input" placeholder="+7999...">
+                </div>
+                <button class="action-btn" onclick="submitNumber()">Добавить</button>
+            </div>
+        </div>
+
+        <!-- 3.2 ДЕЙСТВИЕ: МОИ НОМЕРА -->
+        <div id="page-act-nums" class="page page-hidden-right">
+            <header>
+                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
+                <h1>Мои номера</h1>
+            </header>
+            <div class="content-box">
+                <div class="filter-scroll">
+                    <div class="filter-chip active" onclick="filterNums('all', this)">Все</div>
+                    <div class="filter-chip" onclick="filterNums('В работе', this)">В работе</div>
+                    <div class="filter-chip" onclick="filterNums('Успех', this)">Успех</div>
+                    <div class="filter-chip" onclick="filterNums('Блок', this)">Блок</div>
+                </div>
+                <div class="glass-card" style="margin-top:15px; padding:0;" id="nums-container">
+                    <div style="padding:20px; text-align:center; color:#666;">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.3 ДЕЙСТВИЕ: РЕФЕРАЛКА -->
+        <div id="page-act-ref" class="page page-hidden-right">
+            <header>
+                <div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div>
+                <h1>Кабинет</h1>
+            </header>
+            <div class="glass-card" style="text-align:center;">
+                <div style="font-size:32px; font-weight:700; color:var(--success);">15%</div>
+                <div style="color:var(--text-sec); margin-bottom:20px;">Ваш доход с рефералов</div>
+                <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:15px; margin-bottom:15px;">
+                    <div style="font-size:13px; color:#888;">Приглашено друзей</div>
+                    <div style="font-size:20px; font-weight:600;" id="ref-count">0</div>
+                </div>
+                <div style="text-align:left; font-size:13px; color:#888; margin-bottom:5px;">Ваша ссылка:</div>
+                <div class="glass-input" style="font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer;" onclick="copyToClipboard(this.innerText)" id="ref-link-val">...</div>
+                <button class="action-btn" style="margin-top:15px;" onclick="copyToClipboard(document.getElementById('ref-link-val').innerText)">Скопировать ссылку</button>
+            </div>
+        </div>
+
+        <!-- ИНСТРУКЦИИ КОНТЕНТ (КАК В ПРОШЛЫЙ РАЗ) -->
         <div id="page-instr-add" class="page page-hidden-right">
             <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Добавление</h1></header>
             <div class="glass-card">
-                <div class="video-wrapper"><video controls loop muted playsinline><source src="n.mp4" type="video/mp4"></video></div>
-                <p style="color:var(--text-sec); font-size:14px;">Пошаговая инструкция:</p>
-                <ul class="styled-list"><li>Откройте меню действий.</li><li>Нажмите "Добавить номер".</li><li>Выберите категорию.</li><li>Введите номер.</li></ul>
+                <div class="video-box"><video controls loop muted playsinline><source src="n.mp4" type="video/mp4"></video></div>
+                <div class="content-text">Чтобы добавить номер, следуйте инструкции ниже:</div>
+                <ul class="styled-list"><li>Нажмите кнопку <strong>"Управление номерами"</strong></li><li>Нажмите <strong>"Добавить номер"</strong></li><li>Выберите категорию</li><li>Укажите номер</li></ul>
             </div>
         </div>
+
         <div id="page-instr-subs" class="page page-hidden-right">
             <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Подписки</h1></header>
             <div style="width:100%; max-width:400px;">
-                <div class="sub-accordion" onclick="toggleSub(this)"><div class="sub-header"><span>Alpha</span><span>▼</span></div><div class="sub-body"><div class="sub-content"><p>1 час — 6$<br>Каждые 30 мин — 3$</p></div></div></div>
-                <div class="sub-accordion" onclick="toggleSub(this)"><div class="sub-header"><span>Nucleus</span><span>▼</span></div><div class="sub-body"><div class="sub-content"><p>1 час — 9$<br>Каждые 30 мин — 4.5$</p></div></div></div>
-                <div class="sub-accordion" onclick="toggleSub(this)"><div class="sub-header"><span>Zero Limits</span><span>▼</span></div><div class="sub-body"><div class="sub-content"><p>1 час — 15$<br>Каждые 30 мин — 7.5$</p></div></div></div>
+                <div class="accordion" onclick="toggleAcc(this)"><div class="acc-head"><span>💎 Alpha</span><span>▼</span></div><div class="acc-body"><div class="acc-content"><strong>✨ Функционал:</strong><br>Повышение прайса:<br>• 1 час — 6$ 💵<br>• Каждые 30 мин — 3$ 💸<br><br><strong>⚡ Бонус:</strong> Более быстрый прием.</div></div></div>
+                <div class="accordion" onclick="toggleAcc(this)"><div class="acc-head"><span>⚛️ Nucleus</span><span>▼</span></div><div class="acc-body"><div class="acc-content"><strong>✨ Функционал:</strong><br>Повышение прайса:<br>• 1 час — 9$ 💰<br>• Каждые 30 мин — 4.5$ 💸<br><br><strong>🚀 Бонусы:</strong><br>• Приём номера x2.5 🏎️<br>• Автобот 🤖</div></div></div>
+                <div class="accordion" onclick="toggleAcc(this)"><div class="acc-head"><span>🔥 Zero Limits</span><span>▼</span></div><div class="acc-body"><div class="acc-content"><strong>✨ Функционал:</strong><br>Повышение прайса:<br>• 1 час — 15$ 🤑<br>• Каждые 30 мин — 7.5$ 💸<br><br><strong>🚀 Бонусы:</strong><br>• Приём номера x10 ⚡<br>• Автобот 🤖</div></div></div>
             </div>
         </div>
-        <div id="page-instr-ref" class="page page-hidden-right"><header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Рефералка</h1></header><div class="glass-card"><p>Получайте 15% с пополнений друзей.</p></div></div>
-        <div id="page-instr-card" class="page page-hidden-right"><header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>О Карте</h1></header><div class="glass-card"><p>Виртуальная карта для выплат.</p></div></div>
-        <div id="page-instr-limits" class="page page-hidden-right"><header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Лимиты</h1></header><div class="glass-card"><p>Нужен Username и подписка на каналы.</p></div></div>
+
+        <div id="page-instr-ref" class="page page-hidden-right">
+            <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Партнерам</h1></header>
+            <div class="glass-card"><div class="content-text" style="text-align:center;"><div style="font-size:18px; font-weight:700; margin-bottom:5px;">Партнерская программа</div><div style="color:var(--text-sec);">Зарабатывайте вместе с нами!</div><div style="color:var(--success); font-weight:600; margin:10px 0;">15% с пополнения каждого друга</div></div><ul class="styled-list"><li>Вы приглашаете друга</li><li>Друг пополняет баланс</li><li>Вы получаете 15%</li></ul></div>
+        </div>
+
+        <div id="page-instr-card" class="page page-hidden-right">
+            <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Wallet</h1></header>
+            <div class="glass-card">
+                <div class="bank-card" style="margin-bottom:20px;">
+                    <div><div class="card-brand">NAFUZOR</div><div class="card-number copy-trigger" id="card-num" onclick="copyToClipboard(this.innerText)">****</div></div>
+                    <div class="card-details"><div><div class="card-label">Balance</div><div class="card-val copy-trigger" id="card-bal" onclick="copyToClipboard(this.innerText)">0.00 ₽</div></div><div><div class="card-label">CVV</div><div class="card-val copy-trigger" id="card-cvv" onclick="copyToClipboard(this.innerText)">***</div></div></div>
+                </div>
+                <div class="content-text"><strong>Nafuzor Wallet</strong> - виртуальная карта в боте. Вы можете переводить средства друзьям или обменивать их в <strong>Lixcuk</strong>.</div>
+            </div>
+        </div>
+
+        <div id="page-instr-balance" class="page page-hidden-right">
+            <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Баланс</h1></header>
+            <div class="glass-card">
+                <div class="content-text">Пополнение баланса и покупка подписки.</div>
+                <div style="margin-bottom:10px; color:var(--text-sec);">Автоматически:</div>
+                <ul class="styled-list"><li>Telegram Stars ⭐</li><li>Crypto Bot 🪙</li></ul>
+                <div class="secret-method">
+                    <div style="font-weight:600; margin-bottom:5px;">💳 Секретный способ (Карта)</div>
+                    <div style="font-size:13px; color:rgba(255,255,255,0.8);">Напишите саппорту:</div>
+                    <div class="copy-block" onclick="copyToClipboard('@QibysSupport')"><div class="copy-text">@QibysSupport</div></div>
+                    <div style="margin-top:10px; font-size:13px;">С текстом:</div>
+                    <div class="copy-block" onclick="copyToClipboard('Привет, хочу пополнить баланс Nafuzor Project')"><div class="copy-text">"Привет, хочу пополнить баланс Nafuzor Project"</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-instr-limits" class="page page-hidden-right">
+            <header><div class="back-btn" onclick="goBack()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>Назад</div><h1>Лимиты</h1></header>
+            <div class="glass-card" style="border-color: rgba(255, 69, 58, 0.3);">
+                <div style="font-weight:600; color:var(--danger); margin-bottom:10px;">Системные ограничения:</div>
+                <ul class="styled-list"><li>Ботом нельзя пользоваться без <strong>Username</strong>.</li><li>Обязательна подписка на каналы <strong>Nafuzor Project</strong> и <strong>Lixcuk Project</strong>.</li></ul>
+            </div>
+        </div>
 
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        let tg = window.Telegram.WebApp;
         tg.expand();
-        tg.setHeaderColor('#000000');
+        tg.setHeaderColor('#000000'); 
         tg.setBackgroundColor('#000000');
 
-        let userData = { uid:0, bal:0, sub:'None', ref:0, cn:'..', cb:0, cc:'..', cd:'..', ct:'..', ws:'Wait', nums:[] };
+        // Хранилище данных (заполняется из URL)
+        let userData = {
+            uid: 0, bal: 0, sub: 'None', ref: 0, 
+            cn: '.... .... .... ....', cb: 0, cc: '...', cd: '..', ct: '..', ws: 'Wait', nums: []
+        };
 
-        // 1. ЧТЕНИЕ ДАННЫХ ИЗ URL
+        // --- ЛОГИКА ЗАГРУЗКИ ---
         function parseData() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const raw = params.get('data');
                 if(raw) {
-                    const decoded = JSON.parse(decodeURIComponent(raw));
-                    userData = decoded;
+                    userData = JSON.parse(decodeURIComponent(raw));
                 }
             } catch(e) { console.error('Error parsing data:', e); }
             updateUI();
         }
 
-        // 2. ОБНОВЛЕНИЕ UI
         function updateUI() {
+            // Профиль Телеграм
             const user = tg.initDataUnsafe.user;
             if(user) {
                 document.getElementById('user-name').innerText = user.first_name;
-                if(user.photo_url) document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%;">`;
+                if(user.photo_url) document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
                 else document.getElementById('user-avatar').innerText = user.first_name[0];
             }
 
+            // Данные из URL
             document.getElementById('profile-balance-val').innerText = userData.bal + " ₽";
-            document.getElementById('ref-count').innerText = userData.ref + " чел.";
-            document.getElementById('ref-link-text').innerText = "t.me/nafuzor_bot?start=" + userData.uid;
-            document.getElementById('user-sub-name').innerText = (userData.sub || 'None').toUpperCase();
             
             // Карта
-            document.getElementById('card-num').innerText = userData.cn;
+            document.getElementById('card-num').innerText = userData.cn || '****';
             document.getElementById('card-bal').innerText = userData.cb + " ₽";
-            document.getElementById('card-cvv').innerText = userData.cc;
-            document.getElementById('card-date').innerText = userData.cd;
+            document.getElementById('card-cvv').innerText = userData.cc || '***';
+
+            // Рефералка
+            document.getElementById('ref-count').innerText = userData.ref;
+            document.getElementById('ref-link-val').innerText = `https://t.me/nafuzor_bot?start=${userData.uid}`;
 
             updateStatus();
-            
-            // Убираем загрузчик
+
+            // Скрываем лоадер
             setTimeout(() => {
                 document.getElementById('loader-screen').style.opacity = '0';
                 setTimeout(() => {
@@ -426,58 +507,10 @@
             }, 1000);
         }
 
-        // 3. ОТПРАВКА НОМЕРА
-        function submitNumber() {
-            const input = document.getElementById('phone-input').value.trim();
-            let isValid = (selectedCat === 'MAX') ? /^\+7\d{10}$/.test(input) : /^9\d{9}$/.test(input);
-
-            if (isValid) {
-                // ОТПРАВЛЯЕМ ДАННЫЕ БОТУ (закроет окно)
-                tg.sendData(JSON.stringify({
-                    action: 'add_number',
-                    category: selectedCat,
-                    number: input
-                }));
-            } else {
-                tg.showPopup({title: 'Ошибка', message: 'Неверный формат'});
-            }
-        }
-
-        // 4. ФИЛЬТР НОМЕРОВ
-        function filterNumbers(status) {
-            const list = document.getElementById('nums-list');
-            const empty = document.getElementById('nums-empty');
-            list.innerHTML = '';
-            
-            const filtered = (userData.nums || []).filter(n => n.s === status);
-            
-            if (filtered.length > 0) {
-                list.style.display = 'block'; empty.style.display = 'none';
-                filtered.forEach(n => {
-                    let color = '#fff';
-                    if(status === 'В работе') color = '#0a84ff';
-                    else if(status === 'Ожидает') color = '#ffd60a';
-                    else if(status === 'Успех') color = '#30d158';
-                    else if(status === 'Блок') color = '#ff453a';
-                    
-                    const item = document.createElement('div');
-                    item.className = 'ios-item';
-                    item.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:10px; height:10px; border-radius:50%; background:${color};"></div><span>${n.n}</span></div><span class="ios-label" style="font-size:12px;">${n.c}</span>`;
-                    list.appendChild(item);
-                });
-            } else {
-                list.style.display = 'none'; empty.style.display = 'block';
-                empty.innerText = 'В этой категории пусто';
-            }
-        }
-
-        // УТИЛИТЫ
         function updateStatus() {
             const h = new Date().getHours();
             const b = document.getElementById('status-badge');
-            
-            // Логика времени: 8:00 - 20:00 (зеленый), иначе красный.
-            // Также проверяем статус из бота (userData.ws)
+            // Если время 8-20 - работаем, иначе стоп (пример логики)
             if (h >= 8 && h < 20) { 
                 b.innerText = '🟢 Full Work'; 
                 b.className = 'status-badge status-full'; 
@@ -486,42 +519,143 @@
                 b.className = 'status-badge status-stop'; 
             }
         }
-        function copyRefLink() { navigator.clipboard.writeText(document.getElementById('ref-link-text').innerText).then(() => showToast('Скопировано')); }
-        function shareLink() { tg.openTelegramLink("https://t.me/share/url?url=" + document.getElementById('ref-link-text').innerText); }
-        function showApiToken() { tg.showPopup({title:'API', message: userData.ct}); }
-        function showToast(txt) { const t=document.getElementById('toast'); t.querySelector('span').innerText=txt; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-        function toggleSub(el) { const b=el.querySelector('.sub-body'); if(b.classList.contains('open')) b.classList.remove('open'); else b.classList.add('open'); }
 
-        // НАВИГАЦИЯ
-        let historyStack = [], selectedCat = null;
-        function navigateTo(pid) {
-            const active = document.querySelector('.page-active'); const target = document.getElementById(pid);
-            if(!target || active===target) return;
-            active.classList.remove('page-active'); active.classList.add('page-hidden-left');
-            target.classList.remove('page-hidden-right'); target.classList.add('page-active');
-            historyStack.push(active.id);
+        // --- ЛОГИКА КОПИРОВАНИЯ ---
+        function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(showToast).catch(e => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
         }
+        function fallbackCopy(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast();
+        }
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // --- НАВИГАЦИЯ ---
+        let historyStack = [];
+        function navigateTo(pageId) {
+            const home = document.getElementById('page-home');
+            let currentPage = document.querySelector('.page-active') || home;
+            const target = document.getElementById(pageId);
+            
+            if(target === currentPage) return;
+
+            currentPage.classList.remove('page-active');
+            currentPage.classList.add('page-hidden-left');
+            
+            target.classList.remove('page-hidden-right');
+            target.classList.add('page-active');
+
+            historyStack.push(target);
+            
+            if(pageId === 'page-act-nums') filterNums('all');
+        }
+
         function goBack() {
-            if(!historyStack.length) return;
-            const pid = historyStack.pop();
-            const active = document.querySelector('.page-active'); const prev = document.getElementById(pid);
-            active.classList.remove('page-active'); active.classList.add('page-hidden-right');
-            prev.classList.remove('page-hidden-left'); prev.classList.add('page-active');
-        }
-        function navigateToAddNumber() {
-            navigateTo('page-add'); document.getElementById('add-input-container').style.display='none';
-            document.getElementById('phone-input').value=''; selectedCat=null;
-            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-        }
-        function selectCategory(cat) {
-            selectedCat=cat;
-            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-            if(cat==='MAX') { document.getElementById('cat-max').classList.add('selected'); document.getElementById('phone-input').placeholder='+7999...'; }
-            else { document.getElementById('cat-wa').classList.add('selected'); document.getElementById('phone-input').placeholder='999...'; }
-            document.getElementById('add-input-container').style.display='block';
+            if(historyStack.length === 0) return;
+            const current = historyStack.pop();
+            let previous = historyStack.length > 0 ? historyStack[historyStack.length - 1] : document.getElementById('page-home');
+            if (historyStack.length === 0) previous = document.getElementById('page-home');
+
+            current.classList.remove('page-active');
+            current.classList.add('page-hidden-right');
+
+            previous.classList.remove('page-hidden-left');
+            previous.classList.add('page-active');
         }
 
+        function navigateToAddNumber() {
+            navigateTo('page-act-add');
+            document.getElementById('cat-max').click(); // Default
+        }
+
+        // --- ФУНКЦИОНАЛ МЕНЮ ---
+        
+        // Добавление номера
+        let selectedCat = 'MAX';
+        function selectCat(cat) {
+            selectedCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            if(cat === 'MAX') {
+                document.getElementById('cat-max').classList.add('active');
+                document.getElementById('phone-input').placeholder = '+7999...';
+            } else {
+                document.getElementById('cat-wa').classList.add('active');
+                document.getElementById('phone-input').placeholder = '999...';
+            }
+        }
+        
+        function submitNumber() {
+            const val = document.getElementById('phone-input').value;
+            // РЕАЛЬНАЯ ОТПРАВКА БОТУ
+            if(val.length > 5) {
+                tg.sendData(JSON.stringify({
+                    action: 'add_number',
+                    category: selectedCat,
+                    number: val
+                }));
+            } else {
+                tg.showPopup({title:'Ошибка', message:'Введите номер корректно'});
+            }
+        }
+
+        // Мои номера (Фильтр)
+        function filterNums(filter, btnElement) {
+            if(btnElement) {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            
+            const container = document.getElementById('nums-container');
+            container.innerHTML = '';
+            
+            let filtered = userData.nums || [];
+            if(filter !== 'all') filtered = filtered.filter(n => n.s === filter); // n.s - статус
+
+            if(filtered.length === 0) {
+                container.innerHTML = '<div style="padding:20px; text-align:center; color:#666;">Список пуст</div>';
+                return;
+            }
+
+            filtered.forEach(n => {
+                let stClass = 'st-wait'; let stText = 'Ожидает';
+                // Соответствие статусов из бота (предположительно)
+                if(n.s === 'В работе' || n.s === 'work') { stClass = 'st-work'; stText = 'В работе'; }
+                if(n.s === 'Успех' || n.s === 'ok') { stClass = 'st-ok'; stText = 'Успех'; }
+                if(n.s === 'Блок' || n.s === 'block') { stClass = 'st-block'; stText = 'Блок'; }
+
+                const div = document.createElement('div');
+                div.className = 'num-item';
+                div.innerHTML = `<div class="num-val">${n.n} <span style="font-size:11px; color:#666;">(${n.c})</span></div><div class="num-status ${stClass}">${stText}</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleAcc(element) {
+            const body = element.querySelector('.acc-body');
+            const arrow = element.querySelector('.acc-head span:last-child');
+            if (body.classList.contains('open')) {
+                body.classList.remove('open'); arrow.innerText = '▼';
+            } else {
+                body.classList.add('open'); arrow.innerText = '▲';
+            }
+        }
+
+        // ЗАПУСК ПРИ ЗАГРУЗКЕ
         window.onload = parseData;
+
     </script>
 </body>
 </html>
