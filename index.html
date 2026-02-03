@@ -14,6 +14,7 @@
             --glass-bg-active: rgba(56, 189, 248, 0.2);
             --glass-border: rgba(255, 255, 255, 0.1);
             --primary: #38bdf8;
+            --accent: #0ea5e9;
             --success: #22c55e;
             --danger: #ef4444;
             --warning: #facc15;
@@ -36,7 +37,8 @@
             user-select: none;
         }
 
-        #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        /* КАНВАС ДЛЯ СНЕГА (Глобальный) */
+        #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
         /* ЗАГРУЗЧИК */
         #loader-screen {
@@ -62,7 +64,7 @@
         .spinner-blade:nth-child(11) { transform: rotate(300deg); animation-delay: -0.08s; }
         .spinner-blade:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
 
-        /* ЭКРАН БЛОКИРОВКИ (ДЛЯ БРАУЗЕРА) */
+        /* ЭКРАН БЛОКИРОВКИ ДЛЯ БРАУЗЕРА */
         #browser-block {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #020617; z-index: 9999;
@@ -73,7 +75,7 @@
         .block-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
         .block-text { color: var(--text-sec); margin-bottom: 30px; font-size: 16px; }
 
-        /* СТРУКТУРА */
+        /* СТРУКТУРА ПРИЛОЖЕНИЯ */
         #app-container { width: 100%; height: 100vh; position: relative; display: none; opacity: 0; transition: opacity 0.4s ease; z-index: 1; }
         .page {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0;
@@ -89,7 +91,7 @@
 
         header { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; height: 44px; margin-bottom: 20px; flex-shrink: 0; max-width: 500px; }
         h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; margin: 0; color: #fff; text-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
-        .back-btn { position: absolute; left: 0; top: 0; height: 100%; display: flex; align-items: center; color: var(--primary); font-size: 17px; cursor: pointer; gap: 5px; padding-left: 10px; font-weight: 500; }
+        .back-btn { position: absolute; left: 0; top: 0; height: 100%; display: flex; align-items: center; color: var(--primary); font-size: 17px; cursor: pointer; gap: 5px; padding-left: 20px; font-weight: 500; z-index: 10; }
 
         .glass-card {
             width: 100%; max-width: 420px;
@@ -104,15 +106,14 @@
         .profile-name { font-size: 16px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 12px; margin-bottom: 8px; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .profile-balance { font-size: 15px; font-weight: 600; color: var(--primary); background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 12px; border-radius: 12px; }
         
-        /* Статусы */
         .status-badge { position: absolute; top: 20px; right: 20px; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .status-full { background: var(--success); color: #000; box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
         .status-stop { background: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
 
-        /* Кнопка Админа (Шестеренка) */
+        /* КНОПКА АДМИНА (РОВНАЯ) */
         #admin-btn { position: absolute; bottom: 20px; right: 20px; width: 44px; height: 44px; background: rgba(255,255,255,0.1); border-radius: 14px; display: none; align-items: center; justify-content: center; color: var(--text-sec); cursor: pointer; border: 1px solid var(--glass-border); transition: 0.2s; }
         #admin-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
-        #admin-btn svg { width: 24px; height: 24px; } /* Ровный размер иконки */
+        #admin-btn svg { width: 24px; height: 24px; display: block; } /* Центровка */
 
         .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 420px; margin-top: 10px; }
         .nav-btn { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; height: 110px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; text-align: center; transition: transform 0.1s, background 0.2s; }
@@ -196,8 +197,10 @@
 </head>
 <body>
 
-    <canvas id="star-canvas"></canvas>
+    <!-- СНЕГ (СЛОЙ 0) -->
+    <canvas id="snow-canvas"></canvas>
 
+    <!-- ЗАГРУЗКА (СЛОЙ 10000) -->
     <div id="loader-screen">
         <div class="apple-spinner">
             <div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div>
@@ -206,16 +209,17 @@
         <div style="margin-top:20px; font-weight:600; color:var(--text-sec); font-size: 1.1rem;">Nafuzor Project</div>
     </div>
 
-    <!-- ЭКРАН БЛОКИРОВКИ ДЛЯ БРАУЗЕРА -->
+    <!-- ЗАГЛУШКА БРАУЗЕРА (СЛОЙ 9999) -->
     <div id="browser-block">
         <div class="block-icon">🚫</div>
         <div class="block-title">Доступ ограничен</div>
-        <div class="block-text">Используйте бота для входа.</div>
-        <button class="action-btn" onclick="window.location.href='https://t.me/nafuzor_project_bot'">Перейти в бота</button>
+        <div class="block-text">Пожалуйста, используйте бота для входа в приложение.</div>
+        <button class="action-btn" style="width:auto; padding: 15px 30px;" onclick="window.location.href='https://t.me/nafuzor_project_bot'">Перейти в бота</button>
     </div>
 
     <div id="toast" class="toast">Скопировано!</div>
 
+    <!-- ПРИЛОЖЕНИЕ (СЛОЙ 1) -->
     <div id="app-container">
         
         <!-- ===== PAGE: HOME ===== -->
@@ -231,9 +235,9 @@
                     <div id="user-name" class="profile-name">Загрузка...</div>
                     <div class="profile-balance">Баланс: <span id="profile-balance-val">0 ₽</span></div>
                 </div>
-                <!-- Admin Button -->
+                <!-- Admin Button (FIXED) -->
                 <div id="admin-btn" onclick="navigateTo('page-admin')">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </div>
             </div>
 
@@ -248,6 +252,7 @@
                 </div>
             </div>
 
+            <!-- НОВОСТИ -->
             <div class="news-section" id="news-container">
                 <div class="news-header"><svg width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg><span class="news-title">Новости</span></div>
                 <div class="news-card"><div class="news-badge">NEW</div><div class="news-content" id="news-text">Загрузка...</div></div>
@@ -359,10 +364,10 @@
             news: ""
         };
 
-        // CANVAS STARS
-        const canvas = document.getElementById('star-canvas');
+        // CANVAS SNOW (СНЕГ)
+        const canvas = document.getElementById('snow-canvas');
         const ctx = canvas.getContext('2d');
-        let stars = [];
+        let flakes = [];
         let width, height;
 
         function resize() {
@@ -370,34 +375,44 @@
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
-            stars = [];
-            for(let i=0; i<50; i++) {
-                stars.push({
+            flakes = [];
+            for(let i=0; i<60; i++) {
+                flakes.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    r: Math.random() * 1.5,
-                    s: Math.random() * 0.5 + 0.1
+                    r: Math.random() * 2 + 1,
+                    d: Math.random() * 1 + 0.5
                 });
             }
         }
 
-        function animateStars() {
+        function drawSnow() {
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
             ctx.beginPath();
-            for(let s of stars) {
-                ctx.moveTo(s.x, s.y);
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                s.y += s.s;
-                if(s.y > height) s.y = 0;
+            for(let i = 0; i < flakes.length; i++) {
+                let f = flakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true);
             }
             ctx.fill();
-            requestAnimationFrame(animateStars);
+            moveSnow();
         }
 
+        function moveSnow() {
+            for(let i = 0; i < flakes.length; i++) {
+                let f = flakes[i];
+                f.y += Math.pow(f.d, 2) + 1;
+                
+                if(f.y > height) {
+                    flakes[i] = {x: Math.random()*width, y: 0, r: f.r, d: f.d};
+                }
+            }
+        }
+
+        setInterval(drawSnow, 30);
         window.addEventListener('resize', resize);
         resize();
-        animateStars();
 
         // LOGIC
         function parseData() {
@@ -405,8 +420,9 @@
                 const params = new URLSearchParams(window.location.search);
                 const raw = params.get('data');
                 
-                // Блокировка если нет данных (браузер)
+                // Если данных нет (браузер)
                 if(!raw) {
+                    document.getElementById('loader-screen').style.display = 'none';
                     document.getElementById('browser-block').style.display = 'flex';
                     document.getElementById('app-container').style.display = 'none';
                     return;
@@ -427,8 +443,6 @@
                 if(user.photo_url) document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}?t=${new Date().getTime()}" style="width:100%; height:100%; border-radius:24px; object-fit:cover;">`;
                 else document.getElementById('user-avatar').innerText = user.first_name[0];
             } else {
-                // Если юзера нет в initDataUnsafe, но есть данные из URL (редкий кейс, но все же)
-                // Считаем админом если ID совпадает с переданным в URL
                 if(userData.uid == ADMIN_ID) currentUserId = ADMIN_ID; 
             }
 
@@ -438,6 +452,8 @@
             if(userData.news && userData.news.length > 0) {
                 document.getElementById('news-container').style.display = 'block';
                 document.getElementById('news-text').innerText = userData.news;
+            } else {
+                document.getElementById('news-container').style.display = 'none';
             }
 
             document.getElementById('profile-balance-val').innerText = userData.bal + " ₽";
@@ -449,6 +465,7 @@
 
             updateStatus();
 
+            // Анимация исчезновения загрузчика
             setTimeout(() => {
                 document.getElementById('loader-screen').style.opacity = '0';
                 setTimeout(() => {
@@ -461,11 +478,17 @@
 
         function updateStatus() {
             const b = document.getElementById('status-badge');
-            // Приоритет настройки бота
+            // Проверяем статус из бота
             if (userData.ws && (userData.ws.includes('Stop') || userData.ws.includes('Стоп'))) {
                 b.innerText = '🔴 Stop Work'; b.className = 'status-badge status-stop';
             } else {
-                b.innerText = '🟢 Full Work'; b.className = 'status-badge status-full';
+                // Если бот активен, проверяем время
+                const h = new Date().getHours();
+                if (h >= 8 && h < 20) {
+                    b.innerText = '🟢 Full Work'; b.className = 'status-badge status-full';
+                } else {
+                    b.innerText = '🔴 Stop Work'; b.className = 'status-badge status-stop';
+                }
             }
         }
 
