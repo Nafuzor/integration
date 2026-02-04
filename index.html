@@ -37,10 +37,10 @@
             user-select: none;
         }
 
-        /* КАНВАС ДЛЯ СНЕГА */
+        /* СНЕГ */
         #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
-        /* ЗАГРУЗЧИК */
+        /* ЗАГРУЗКА */
         #loader-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #020617; z-index: 10000;
@@ -51,7 +51,6 @@
         .spinner-blade { position: absolute; left: 44.5%; top: 0; width: 11%; height: 27%; border-radius: 50px; background: var(--primary); transform-origin: 50% 185%; animation: fade 1s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fade { 0% { opacity: 1; } 100% { opacity: 0.25; } }
-        /* Лепестки спиннера */
         .spinner-blade:nth-child(1) { transform: rotate(0deg); animation-delay: -1s; }
         .spinner-blade:nth-child(2) { transform: rotate(30deg); animation-delay: -0.9s; }
         .spinner-blade:nth-child(3) { transform: rotate(60deg); animation-delay: -0.8s; }
@@ -65,18 +64,17 @@
         .spinner-blade:nth-child(11) { transform: rotate(300deg); animation-delay: -0.08s; }
         .spinner-blade:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
 
-        /* ЭКРАН БЛОКИРОВКИ ДЛЯ БРАУЗЕРА (КРАСИВЫЙ) */
+        /* ЗАГЛУШКА БРАУЗЕРА (ПРОЗРАЧНАЯ) */
         #browser-block {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Полупрозрачный фон, чтобы видеть снег */
-            background: rgba(2, 6, 23, 0.6); 
-            backdrop-filter: blur(5px);
+            background: rgba(2, 6, 23, 0.4); /* Прозрачность чтобы видеть снег */
+            backdrop-filter: blur(8px);
             z-index: 9999;
             display: none; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 20px;
         }
         .block-card {
-            background: rgba(30, 41, 59, 0.85); /* Жидкое стекло */
+            background: rgba(30, 41, 59, 0.7); /* Стекло */
             border: 1px solid var(--glass-border);
             border-radius: 24px; padding: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
@@ -88,7 +86,7 @@
         .block-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #fff; }
         .block-text { color: var(--text-sec); margin-bottom: 25px; font-size: 15px; line-height: 1.5; }
 
-        /* СТРУКТУРА ПРИЛОЖЕНИЯ */
+        /* ПРИЛОЖЕНИЕ */
         #app-container { width: 100%; height: 100vh; position: relative; display: none; opacity: 0; transition: opacity 0.4s ease; z-index: 1; }
         .page {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0;
@@ -221,7 +219,7 @@
         <div style="margin-top:20px; font-weight:600; color:var(--text-sec); font-size: 1.1rem;">Nafuzor Project</div>
     </div>
 
-    <!-- ЗАГЛУШКА БРАУЗЕРА (СЛОЙ 9999) -->
+    <!-- ЗАГЛУШКА БРАУЗЕРА (СЛОЙ 9999) С ОКОШКОМ И СНЕГОМ -->
     <div id="browser-block">
         <div class="block-card">
             <div class="block-icon">⛔</div>
@@ -249,7 +247,7 @@
                     <div id="user-name" class="profile-name">Загрузка...</div>
                     <div class="profile-balance">Баланс: <span id="profile-balance-val">0 ₽</span></div>
                 </div>
-                <!-- Admin Button -->
+                <!-- Admin Button (FIXED) -->
                 <div id="admin-btn" onclick="navigateTo('page-admin')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </div>
@@ -282,32 +280,17 @@
             </div>
         </div>
 
-        <!-- ===== PAGE: MENU ===== -->
+        <!-- ===== PAGE: MENU (БЕЗ "ДОБАВИТЬ НОМЕР") ===== -->
         <div id="page-menu" class="page page-hidden-right">
             <header><div class="back-btn" onclick="goBack()">Назад</div><h1>Меню</h1></header>
             <div class="menu-list">
-                <div class="menu-item" onclick="navigateToAddNumber()"><div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg></div><div class="menu-text">Добавить номер</div><div class="chevron">›</div></div>
+                <!-- Убрано Добавить номер -->
                 <div class="menu-item" onclick="navigateTo('page-act-nums')"><div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg></div><div class="menu-text">Мои номера</div><div class="chevron">›</div></div>
                 <div class="menu-item" onclick="navigateTo('page-act-ref')"><div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div><div class="menu-text">Рефералка</div><div class="chevron">›</div></div>
             </div>
         </div>
 
         <!-- ACTIONS SUBPAGES -->
-        <div id="page-act-add" class="page page-hidden-right">
-            <header><div class="back-btn" onclick="goBack()">Назад</div><h1>Добавить номер</h1></header>
-            <div class="glass-card" style="width:90%">
-                <div style="text-align:center; margin-bottom:15px; color:var(--text-sec);">Выберите категорию</div>
-                <div class="cat-row">
-                    <div class="cat-btn active" id="cat-max" onclick="selectCat('MAX')">MAX 🔵</div>
-                    <div class="cat-btn" id="cat-wa" onclick="selectCat('WA')">WhatsApp 🟢</div>
-                </div>
-                <div style="width:100%; margin-bottom:20px;">
-                    <input type="tel" id="phone-input" class="glass-input" placeholder="+7999...">
-                </div>
-                <button class="action-btn" onclick="submitNumber()">Добавить</button>
-            </div>
-        </div>
-
         <div id="page-act-nums" class="page page-hidden-right">
             <header><div class="back-btn" onclick="goBack()">Назад</div><h1>Мои номера</h1></header>
             <div class="glass-card" style="width:90%; padding: 15px;">
@@ -550,23 +533,6 @@
             if (historyStack.length === 0) previous = document.getElementById('page-home');
             current.classList.remove('page-active'); current.classList.add('page-hidden-right');
             previous.classList.remove('page-hidden-left'); previous.classList.add('page-active');
-        }
-
-        function navigateToAddNumber() { navigateTo('page-act-add'); document.getElementById('cat-max').click(); }
-
-        let selectedCat = 'MAX';
-        function selectCat(cat) {
-            selectedCat = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            if(cat === 'MAX') { document.getElementById('cat-max').classList.add('active'); document.getElementById('phone-input').placeholder = '+7999...'; } 
-            else { document.getElementById('cat-wa').classList.add('active'); document.getElementById('phone-input').placeholder = '999...'; }
-        }
-        
-        function submitNumber() {
-            const val = document.getElementById('phone-input').value;
-            if(val.length > 5) {
-                tg.sendData(JSON.stringify({ action: 'add_number', category: selectedCat, number: val }));
-            } else { tg.showPopup({title:'Ошибка', message:'Введите номер корректно'}); }
         }
 
         function filterNums(filter, btnElement) {
