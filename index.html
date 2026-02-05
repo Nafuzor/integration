@@ -22,7 +22,6 @@
             --text-sec: #94a3b8;
             --card-radius: 24px;
             --header-height: 60px;
-            --app-max-width: 440px; /* Максимальная ширина приложения */
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -31,58 +30,46 @@
             margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Outfit', sans-serif;
             background: #020617;
+            /* Фон на весь экран */
             background-image: radial-gradient(circle at top left, #1e40af, #020617 60%, #000000);
             background-attachment: fixed;
+            background-size: cover;
             color: var(--text-main);
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden; /* Убираем горизонтальный скролл */
             user-select: none;
-            overscroll-behavior: none;
         }
 
-        /* АДАПТАЦИЯ ПОД ПК И ПЛАНШЕТЫ */
+        /* --- CSS ДЛЯ ПК И ПЛАНШЕТОВ (Сделает сайт нормальным) --- */
         @media (min-width: 768px) {
-            body {
-                display: flex;
-                justify-content: center;
-                background: #000; /* Черный фон вокруг на пк */
-            }
             #app-container {
-                max-width: var(--app-max-width);
-                width: 100%;
-                border-left: 1px solid rgba(255,255,255,0.1);
-                border-right: 1px solid rgba(255,255,255,0.1);
-                position: relative;
-                height: 100vh;
-                background-image: radial-gradient(circle at top left, #1e40af, #020617 60%, #000000); /* Фон внутри приложения */
-                margin: 0 auto;
+                max-width: 800px; /* Оптимальная ширина контента на ПК */
+                margin: 0 auto;   /* Центрирование */
+                padding-left: 20px;
+                padding-right: 20px;
             }
-            /* Фикс хедера на пк */
+            
+            /* Кнопки гостя в один ряд на ПК */
+            .guest-links-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+            .guest-btn.full {
+                grid-column: span 1 !important;
+            }
+
+            /* Карточки на всю ширину контейнера */
+            .glass-card, .nav-row, .instr-grid, .menu-list {
+                max-width: 100% !important;
+            }
+
+            /* Хедер на всю ширину */
             .glass-header {
-                max-width: var(--app-max-width) !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                border-left: 1px solid rgba(255,255,255,0.1);
-                border-right: 1px solid rgba(255,255,255,0.1);
-            }
-            /* Фикс снега на пк */
-            #snow-canvas {
-                max-width: var(--app-max-width);
-                left: 50% !important;
-                transform: translateX(-50%);
-            }
-            /* Фикс загрузки */
-            #loader-screen {
-                max-width: var(--app-max-width);
-                left: 50% !important;
-                transform: translateX(-50%);
-            }
-            /* Фикс тоста */
-            .toast {
-                width: auto;
-                white-space: nowrap;
+                width: 100% !important;
+                left: 0 !important;
+                transform: none !important;
             }
         }
+        /* -------------------------------------------------------- */
 
         /* СНЕГ */
         #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -407,7 +394,7 @@
                 <!-- Row 2: Subs & Card -->
                 <div class="instr-item" onclick="navigateTo('page-instr-subs')">
                     <!-- NEW ICON FOR SUBSCRIPTIONS (STAR/BADGE) -->
-                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg></div>
+                    <div class="menu-item-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"></path></svg></div>
                     <div class="menu-text">О подписках</div>
                 </div>
                 <div class="instr-item" onclick="navigateTo('page-instr-card')">
