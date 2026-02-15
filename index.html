@@ -15,7 +15,6 @@
             --text-sec: #94a3b8;
             --card-radius: 28px;
             --header-height: 64px;
-            --app-width: 460px; /* Ширина приложения на ПК */
             
             /* Liquid Glass Variables */
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -48,60 +47,19 @@
             user-select: none;
         }
 
-        /* === ИСПРАВЛЕНИЕ ДЛЯ ПК И ПЛАНШЕТОВ === */
+        /* PC ADAPTATION */
         @media (min-width: 768px) {
-            body {
-                display: flex;
-                justify-content: center; /* Центрируем по горизонтали */
-                background-color: #020617; /* Темный фон вокруг */
-            }
-            #app-container {
-                max-width: var(--app-width);
-                width: 100%;
-                min-height: 100vh;
-                margin: 0 auto;
-                position: relative;
-                box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Тень вокруг "телефона" */
-                border-left: 1px solid rgba(255,255,255,0.05);
-                border-right: 1px solid rgba(255,255,255,0.05);
-                background-image: 
-                    radial-gradient(circle at 10% 20%, rgba(30, 64, 175, 0.4) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
-                    radial-gradient(circle at 50% 50%, #020617 0%, #000000 100%);
-                background-attachment: scroll; /* Чтобы фон скроллился внутри контейнера */
-            }
-            /* Хедер фиксируем внутри контейнера */
-            .glass-header {
-                max-width: var(--app-width);
-                left: 50% !important;
-                transform: translateX(-50%);
-                border-left: 1px solid rgba(255,255,255,0.05);
-                border-right: 1px solid rgba(255,255,255,0.05);
-            }
-            /* Загрузка и снег тоже ограничиваем */
-            #loader-screen, #snow-canvas {
-                max-width: var(--app-width);
-                left: 50% !important;
-                transform: translateX(-50%);
-            }
-            /* Тост по центру */
-            .toast {
-                left: 50% !important;
-                transform: translateX(-50%) translateY(20px) !important;
-                width: auto;
-            }
-            .toast.show {
-                transform: translateX(-50%) translateY(0) !important;
-            }
-            /* Сетка кнопок гостя */
-            .guest-links-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-            .guest-btn.full {
-                grid-column: span 1 !important;
-            }
+            #app-container { max-width: 800px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+            .nav-row { grid-template-columns: 1fr 1fr !important; }
+            .nav-row.single-col { grid-template-columns: 1fr !important; } /* Исправление для браузера на ПК */
+            .instr-grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .instr-item.full { grid-column: span 3 !important; }
+            .glass-header { width: 100% !important; left: 0 !important; }
+            
+            /* Guest Buttons Fix for PC */
+            .guest-links-grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .guest-btn.full { grid-column: span 1 !important; }
         }
-        /* ========================================= */
 
         /* SNOW */
         #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -163,16 +121,18 @@
         }
         @keyframes float-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* GUEST LINKS (FOR BROWSER) */
+        /* --- UPDATED GUEST LINKS (Style from Second Site) --- */
         .guest-links-grid { 
             display: grid; grid-template-columns: 1fr 1fr; gap: 14px; 
             width: 100%; max-width: 420px; margin-bottom: 25px; 
             animation: float-up 0.6s ease-out 0.1s backwards;
         }
         .guest-btn {
+            /* Темный, насыщенный стиль */
             background: rgba(30, 41, 59, 0.4);
             box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.05), 0 10px 20px rgba(0,0,0,0.3); 
-            border: 1px solid rgba(56, 189, 248, 0.25); border-top: 1px solid rgba(56, 189, 248, 0.5); 
+            border: 1px solid rgba(56, 189, 248, 0.25); 
+            border-top: 1px solid rgba(56, 189, 248, 0.5); 
             border-radius: 20px; padding: 20px; 
             color: #e0f2fe; text-decoration: none; font-weight: 600; font-size: 14px; letter-spacing: 0.3px;
             text-align: center; display: flex; align-items: center; justify-content: center;
@@ -186,7 +146,13 @@
         }
         .guest-btn:active { transform: scale(0.96); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
         .guest-btn:active::before { opacity: 1; }
-        .guest-btn.full { grid-column: span 2; background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.4); color: #fff; text-shadow: 0 0 10px rgba(56, 189, 248, 0.6); font-size: 15px; }
+        
+        .guest-btn.full { 
+            grid-column: span 2; 
+            background: rgba(56, 189, 248, 0.1); 
+            border-color: rgba(56, 189, 248, 0.4); 
+            color: #fff; text-shadow: 0 0 10px rgba(56, 189, 248, 0.6); font-size: 15px; 
+        }
 
         /* PROFILE STYLES */
         .profile-container { display: flex; align-items: center; justify-content: flex-start; gap: 20px; position: relative; }
@@ -226,7 +192,7 @@
 
         /* NAV BUTTONS */
         .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 420px; margin-top: 10px; animation: float-up 0.6s ease-out 0.2s backwards; }
-        .nav-row.single-col { grid-template-columns: 1fr; } /* Для браузера */
+        .nav-row.single-col { grid-template-columns: 1fr; } 
         .nav-btn { 
             background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
             backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.2);
@@ -422,7 +388,7 @@
                 </div>
                 <!-- Admin Button -->
                 <div id="admin-btn" onclick="navigateTo('page-admin')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </div>
             </div>
 
@@ -614,7 +580,7 @@
         <!-- SUBS -->
         <div id="page-instr-subs" class="page page-hidden-right">
             <div style="width:90%; max-width:400px;">
-                <div class="accordion" onclick="toggleAcc(this)">
+                <div class="accordion" id="sub-alpha" onclick="toggleAcc(this)">
                     <div class="acc-head"><div class="acc-icon-wrap"><svg class="acc-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg><span>Alpha</span></div><span>▼</span></div>
                     <div class="acc-body">
                         <div class="acc-content">
@@ -625,7 +591,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion" onclick="toggleAcc(this)">
+                <div class="accordion" id="sub-nucleus" onclick="toggleAcc(this)">
                     <div class="acc-head"><div class="acc-icon-wrap"><svg class="acc-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg><span>Nucleus</span></div><span>▼</span></div>
                     <div class="acc-body">
                         <div class="acc-content">
@@ -638,7 +604,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion" onclick="toggleAcc(this)">
+                <div class="accordion" id="sub-zero" onclick="toggleAcc(this)">
                     <div class="acc-head"><div class="acc-icon-wrap"><svg class="acc-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg><span>Zero Limits</span></div><span>▼</span></div>
                     <div class="acc-body">
                         <div class="acc-content">
@@ -880,7 +846,29 @@
         // HASH NAVIGATION LOGIC
         function handleHash() {
             const hash = window.location.hash.substring(1);
-            if (hash) {
+            if (!hash) return;
+
+            // Check if it's a subscription link
+            if (['sub-alpha', 'sub-nucleus', 'sub-zero'].includes(hash)) {
+                navigateTo('page-instr-subs');
+                // Wait for transition, then open accordion
+                setTimeout(() => {
+                    const target = document.getElementById(hash);
+                    if (target) {
+                        const body = target.querySelector('.acc-body');
+                        const arrow = target.querySelector('.acc-head span:last-child');
+                        // Force open
+                        if (!body.classList.contains('open')) {
+                            body.classList.add('open');
+                            arrow.innerText = '▲';
+                        }
+                        // Scroll to it
+                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 350); // Delay to match page transition
+            } 
+            // Standard page link
+            else {
                 const target = document.getElementById(hash);
                 if (target) {
                     navigateTo(hash);
