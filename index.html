@@ -15,6 +15,7 @@
             --text-sec: #94a3b8;
             --card-radius: 28px;
             --header-height: 64px;
+            --app-width: 460px; /* Ширина приложения на ПК */
             
             /* Liquid Glass Variables */
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -47,14 +48,60 @@
             user-select: none;
         }
 
-        /* PC ADAPTATION */
+        /* === ИСПРАВЛЕНИЕ ДЛЯ ПК И ПЛАНШЕТОВ === */
         @media (min-width: 768px) {
-            #app-container { max-width: 800px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
-            .nav-row { grid-template-columns: 1fr 1fr !important; }
-            .instr-grid { grid-template-columns: repeat(3, 1fr) !important; }
-            .instr-item.full { grid-column: span 3 !important; }
-            .glass-header { width: 100% !important; left: 0 !important; }
+            body {
+                display: flex;
+                justify-content: center; /* Центрируем по горизонтали */
+                background-color: #020617; /* Темный фон вокруг */
+            }
+            #app-container {
+                max-width: var(--app-width);
+                width: 100%;
+                min-height: 100vh;
+                margin: 0 auto;
+                position: relative;
+                box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Тень вокруг "телефона" */
+                border-left: 1px solid rgba(255,255,255,0.05);
+                border-right: 1px solid rgba(255,255,255,0.05);
+                background-image: 
+                    radial-gradient(circle at 10% 20%, rgba(30, 64, 175, 0.4) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 50% 50%, #020617 0%, #000000 100%);
+                background-attachment: scroll; /* Чтобы фон скроллился внутри контейнера */
+            }
+            /* Хедер фиксируем внутри контейнера */
+            .glass-header {
+                max-width: var(--app-width);
+                left: 50% !important;
+                transform: translateX(-50%);
+                border-left: 1px solid rgba(255,255,255,0.05);
+                border-right: 1px solid rgba(255,255,255,0.05);
+            }
+            /* Загрузка и снег тоже ограничиваем */
+            #loader-screen, #snow-canvas {
+                max-width: var(--app-width);
+                left: 50% !important;
+                transform: translateX(-50%);
+            }
+            /* Тост по центру */
+            .toast {
+                left: 50% !important;
+                transform: translateX(-50%) translateY(20px) !important;
+                width: auto;
+            }
+            .toast.show {
+                transform: translateX(-50%) translateY(0) !important;
+            }
+            /* Сетка кнопок гостя */
+            .guest-links-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+            .guest-btn.full {
+                grid-column: span 1 !important;
+            }
         }
+        /* ========================================= */
 
         /* SNOW */
         #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -116,6 +163,31 @@
         }
         @keyframes float-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* GUEST LINKS (FOR BROWSER) */
+        .guest-links-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px; 
+            width: 100%; max-width: 420px; margin-bottom: 25px; 
+            animation: float-up 0.6s ease-out 0.1s backwards;
+        }
+        .guest-btn {
+            background: rgba(30, 41, 59, 0.4);
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.05), 0 10px 20px rgba(0,0,0,0.3); 
+            border: 1px solid rgba(56, 189, 248, 0.25); border-top: 1px solid rgba(56, 189, 248, 0.5); 
+            border-radius: 20px; padding: 20px; 
+            color: #e0f2fe; text-decoration: none; font-weight: 600; font-size: 14px; letter-spacing: 0.3px;
+            text-align: center; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(12px); position: relative; overflow: hidden;
+        }
+        .guest-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(56,189,248,0.2) 0%, transparent 70%);
+            opacity: 0; transition: 0.3s;
+        }
+        .guest-btn:active { transform: scale(0.96); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+        .guest-btn:active::before { opacity: 1; }
+        .guest-btn.full { grid-column: span 2; background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.4); color: #fff; text-shadow: 0 0 10px rgba(56, 189, 248, 0.6); font-size: 15px; }
+
         /* PROFILE STYLES */
         .profile-container { display: flex; align-items: center; justify-content: flex-start; gap: 20px; position: relative; }
         .avatar { 
@@ -154,6 +226,7 @@
 
         /* NAV BUTTONS */
         .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 420px; margin-top: 10px; animation: float-up 0.6s ease-out 0.2s backwards; }
+        .nav-row.single-col { grid-template-columns: 1fr; } /* Для браузера */
         .nav-btn { 
             background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
             backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.2);
@@ -340,7 +413,7 @@
         <div id="page-home" class="page page-active">
             
             <!-- PROFILE SECTION (APP MODE) -->
-            <div id="profile-section" class="glass-card profile-container">
+            <div id="profile-section" class="glass-card profile-container" style="display:none;">
                 <div id="status-badge" class="status-badge">Loading...</div>
                 <div id="user-avatar" class="avatar">NP</div>
                 <div class="profile-info">
@@ -353,13 +426,23 @@
                 </div>
             </div>
 
+            <!-- GUEST PANEL (BROWSER MODE) -->
+            <div id="guest-panel" style="display:none; width: 100%; max-width: 420px; margin-bottom: 20px;">
+                <div class="guest-links-grid">
+                    <a href="https://t.me/NafuzorProject" target="_blank" class="guest-btn">Nafuzor Project</a>
+                    <a href="https://t.me/+CkYoMu606HVlNDFi" target="_blank" class="guest-btn">Lixcuk Project</a>
+                    <a href="https://t.me/nafuzor_project_bot?start=main" target="_blank" class="guest-btn full">Перейти в бота</a>
+                </div>
+            </div>
+
             <!-- MAIN MENU -->
-            <div class="nav-row">
+            <div class="nav-row" id="main-nav-row">
                 <div class="nav-btn" onclick="navigateTo('page-instructions')">
                     <div class="nav-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div>
                     <div class="nav-title">Инструкции</div><div class="nav-desc">База знаний</div>
                 </div>
-                <div class="nav-btn" onclick="navigateTo('page-menu')">
+                <!-- Кнопка "Открыть меню" (скрывается в браузере) -->
+                <div class="nav-btn" id="btn-open-menu" onclick="navigateTo('page-menu')">
                     <div class="nav-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg></div>
                     <div class="nav-title">Открыть меню</div><div class="nav-desc">Действия</div>
                 </div>
@@ -691,7 +774,12 @@
                 if(user.photo_url) document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}?t=${new Date().getTime()}" style="width:100%; height:100%; border-radius:22px; object-fit:cover;">`;
                 else document.getElementById('user-avatar').innerText = user.first_name[0];
             } else {
+                // Browser mode / Guest
                 if(userData.uid == ADMIN_ID) currentUserId = ADMIN_ID; 
+                document.getElementById('profile-section').style.display = 'none';
+                document.getElementById('guest-panel').style.display = 'block';
+                document.getElementById('btn-open-menu').style.display = 'none';
+                document.getElementById('main-nav-row').classList.add('single-col');
             }
 
             if(currentUserId === ADMIN_ID) document.getElementById('admin-btn').style.display = 'flex';
@@ -789,6 +877,17 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
+        // HASH NAVIGATION LOGIC
+        function handleHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const target = document.getElementById(hash);
+                if (target) {
+                    navigateTo(hash);
+                }
+            }
+        }
+
         let historyStack = [];
         function navigateTo(pageId) {
             const home = document.getElementById('page-home');
@@ -841,7 +940,10 @@
             if (body.classList.contains('open')) { body.classList.remove('open'); arrow.innerText = '▼'; } else { body.classList.add('open'); arrow.innerText = '▲'; }
         }
 
-        window.onload = parseData;
+        window.onload = function() {
+            if (typeof parseData === 'function') parseData();
+            setTimeout(handleHash, 100);
+        };
     </script>
 </body>
 </html>
