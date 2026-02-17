@@ -31,33 +31,29 @@
             margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Outfit', sans-serif;
             background: #000000;
-            /* Глубокий фон */
-            background-image: 
-                radial-gradient(circle at 50% 0%, #1e293b 0%, #000000 70%);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #000000 70%);
             background-attachment: fixed;
             background-size: cover;
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
             user-select: none;
-            
-            /* ЦЕНТРИРОВАНИЕ НА ПК */
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
 
-        /* КОНТЕЙНЕР ПРИЛОЖЕНИЯ */
+        /* CONTAINER */
         #app-container { 
             width: 100%; 
-            max-width: 500px; /* Фикс ширины */
+            max-width: 500px; 
             min-height: 100vh; 
             position: relative; 
             display: none; 
             opacity: 0; 
             z-index: 1;
             background: transparent;
-            /* На ПК добавляем границы, чтобы не сливалось */
+            transition: opacity 0.5s ease;
         }
 
         @media (min-width: 768px) {
@@ -66,13 +62,8 @@
                 border-right: 1px solid rgba(255,255,255,0.05);
                 box-shadow: 0 0 50px rgba(0,0,0,0.5);
             }
-            /* Кнопки гостя в ряд на ПК */
-            .guest-links-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-            .guest-btn.full {
-                grid-column: span 1 !important;
-            }
+            .guest-links-grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .guest-btn.full { grid-column: span 1 !important; }
         }
 
         /* SNOW */
@@ -100,10 +91,10 @@
             border-radius: 12px; cursor: pointer;
             transition: 0.3s;
         }
-        .header-back-box:hover { background: rgba(255, 255, 255, 0.1); }
+        .header-back-box:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.9); }
         .header-back-box svg { color: #fff; width: 22px; height: 22px; }
 
-        /* PAGE STRUCTURE */
+        /* PAGE */
         .page {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0;
             padding: calc(var(--header-height) + 20px) 16px 80px 16px; 
@@ -115,94 +106,44 @@
         .page-hidden-left { transform: translateX(-50px); opacity: 0; z-index: 1; pointer-events: none; }
         .page-hidden-right { transform: translateX(100%); opacity: 0; z-index: 1; pointer-events: none; }
 
-        /* === ANIMATED BORDER EFFECT (ROTATING) === */
-        /* Класс для кнопок с анимацией */
+        /* ANIMATED BORDER */
         .anim-border {
             position: relative;
-            background: var(--glass-bg); /* Фон внутри */
+            background: rgba(20, 20, 20, 0.8);
             border-radius: 20px;
-            overflow: hidden; /* Чтобы градиент не вылезал */
+            overflow: hidden;
             z-index: 1;
-            /* Невидимая граница для отступа контента */
-            border: 1px solid transparent; 
-            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; width: 100%; height: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        /* Вращающийся слой сзади */
         .anim-border::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 300%; height: 300%; /* Большой размер для покрытия углов при вращении */
-            background: conic-gradient(
-                transparent 0deg, 
-                transparent 140deg, 
-                rgba(255, 255, 255, 0.8) 180deg, 
-                transparent 220deg, 
-                transparent 360deg
-            );
-            transform: translate(-50%, -50%);
-            animation: rotate-border 4s linear infinite;
-            z-index: -2;
-            will-change: transform;
+            content: ''; position: absolute; top: 50%; left: 50%; width: 250%; height: 250%;
+            background: conic-gradient(transparent 0deg, transparent 270deg, rgba(255, 255, 255, 0.8) 320deg, transparent 360deg);
+            transform: translate(-50%, -50%); animation: rotate-border 4s linear infinite; z-index: -2;
         }
-
-        /* Внутренний слой (фон кнопки), чтобы перекрыть центр градиента */
         .anim-border::after {
-            content: '';
-            position: absolute;
-            inset: 1.5px; /* Толщина рамки */
-            background: #0f172a; /* Темный фон кнопки */
-            border-radius: 19px; /* Чуть меньше радиуса родителя */
-            z-index: -1;
+            content: ''; position: absolute; inset: 2px; background: #0f172a; border-radius: 18px; z-index: -1;
         }
+        @keyframes rotate-border { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @media (hover: hover) { .anim-border:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.1); } }
+        .anim-border:active { transform: scale(0.97); }
 
-        @keyframes rotate-border {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        /* HOVER EFFECTS (Desktop) */
-        @media (hover: hover) {
-            .anim-border:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-            }
-            .anim-border:hover::before {
-                animation-duration: 2s; /* Быстрее при наведении */
-                background: conic-gradient(
-                    transparent 0deg, 
-                    transparent 120deg, 
-                    #ffffff 180deg, 
-                    transparent 240deg, 
-                    transparent 360deg
-                );
-            }
-        }
-        .anim-border:active { transform: scale(0.97); opacity: 0.8; }
-
-        /* BUTTON STYLES INSIDE ANIM-BORDER */
-        .guest-links-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            width: 100%; max-width: 420px; margin-bottom: 25px; 
-        }
+        /* GUEST LINKS */
+        .guest-links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 420px; margin-bottom: 25px; }
         .guest-btn {
-            /* Стили текста и отступов */
-            padding: 20px; 
+            padding: 20px; width: 100%; height: 100%;
             color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; 
-            text-align: center; display: flex; align-items: center; justify-content: center;
-            height: 100%; width: 100%;
+            text-align: center; display: flex; align-items: center; justify-content: center; z-index: 2;
         }
         .guest-btn.full { grid-column: span 2; }
 
-        /* INSTRUCTIONS & MENU STYLES */
+        /* MENU & INSTR */
         .nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 420px; margin-top: 10px; }
         .nav-row.single-col { grid-template-columns: 1fr; }
-        
         .nav-btn-content {
             padding: 20px; height: 110px; width: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            text-align: center; color: #fff;
+            text-align: center; color: #fff; z-index: 2;
         }
         .nav-icon { font-size: 32px; margin-bottom: 8px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)); }
         .nav-title { font-size: 16px; font-weight: 600; }
@@ -210,59 +151,55 @@
 
         .instr-grid { width: 100%; max-width: 420px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .instr-item.full { grid-column: span 2; }
-        
         .instr-content {
             padding: 16px; width: 100%; min-height: 100px;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-align: center; color: #fff;
+            text-align: center; color: #fff; z-index: 2;
         }
         .instr-item.full .instr-content { flex-direction: row; gap: 15px; text-align: left; }
-        .instr-item.full .menu-text { margin-top: 0; }
-        
         .menu-item-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: #fff; }
         .menu-item-icon svg { width: 100%; height: 100%; }
         .menu-text { font-size: 14px; font-weight: 600; margin-top: 8px; }
+        .instr-item.full .menu-text { margin-top: 0; font-size: 16px; }
 
         /* PROFILE */
         .glass-card {
             width: 100%; max-width: 420px;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--card-radius);
-            padding: 20px; margin-bottom: 18px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--card-radius);
+            padding: 20px; margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         .profile-container { display: flex; align-items: center; justify-content: flex-start; gap: 20px; position: relative; }
         .avatar { width: 70px; height: 70px; flex-shrink: 0; border-radius: 22px; background: linear-gradient(135deg, #475569, #1e293b); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
         .profile-name { font-size: 17px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 12px; margin-bottom: 6px; }
         .profile-balance { font-size: 15px; font-weight: 600; color: #e2e8f0; }
         
-        /* MENU LIST (NORMAL) */
         .menu-list { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
-        .menu-item { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; 
-            display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; 
-        }
+        .menu-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; }
         .menu-item:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
         .chevron { color: var(--text-sec); opacity: 0.5; margin-left: auto; }
 
-        /* OTHER STYLES */
+        /* TARIFFS & RULES */
         .rules-icons { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
         .rule-badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
         .rule-badge.max-style { background: linear-gradient(135deg, #6366f1, #d946ef); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .rule-warning { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 18px; padding: 15px; margin-bottom: 15px; display: flex; gap: 12px; }
+        .warning-text { font-size: 13px; line-height: 1.5; color: #fca5a5; }
         
         .tariff-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 18px; margin-bottom: 12px; }
         .tariff-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
-        
+        .tariff-name { font-size: 16px; font-weight: 700; color: #fff; }
+        .tariff-price { font-size: 15px; font-weight: 600; color: var(--success); margin-left: auto; }
+        .tariff-details { font-size: 13px; color: var(--text-sec); line-height: 1.6; list-style: none; padding: 0; }
+        .tariff-details li { display: flex; align-items: center; gap: 6px; }
+        .tariff-details li::before { content: '•'; color: var(--primary); }
+
         .accordion { background: rgba(255,255,255,0.03); border-radius: 18px; margin-bottom: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         .acc-head { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.3); }
         .acc-body.open { max-height: 500px; }
         .acc-content { padding: 18px; font-size: 14px; color: var(--text-sec); line-height: 1.6; }
-        .acc-row { display: flex; align-items: center; margin-bottom: 6px; }
-        .inline-icon { width: 16px; height: 16px; margin-right: 6px; }
-
+        
         .copy-block { background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 16px; margin-top: 10px; cursor: pointer; border: 1px dashed rgba(255,255,255,0.3); text-align: center; }
         .copy-block:active { background: rgba(255,255,255,0.1); }
         .copy-text { font-family: monospace; font-size: 15px; font-weight: 600; color: #fff; }
@@ -272,12 +209,19 @@
         .pay-item.full { flex: 1 1 100%; }
 
         .bank-card { width: 100%; height: 200px; border-radius: 24px; background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid rgba(255,255,255,0.2); padding: 25px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; color: #fff; }
+        .card-brand { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+        .card-number { font-size: 22px; font-family: monospace; letter-spacing: 2px; margin-top: 10px; }
         
-        .content-text { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.9); margin-bottom: 15px; }
-        .styled-list li { position: relative; padding-left: 24px; margin-bottom: 10px; list-style: none; font-size: 15px; color: var(--text-sec); }
-        .styled-list li::before { content: '•'; position: absolute; left: 5px; color: #fff; }
+        .admin-textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; color: white; padding: 15px; outline: none; margin-bottom: 15px; }
+        .glass-input { width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; color: white; outline: none; margin-bottom: 15px; }
+        .action-btn { width: 100%; padding: 18px; background: #fff; color: #000; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
 
-        /* Loader */
+        /* STATUS */
+        .status-badge { position: absolute; top: 20px; right: 20px; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .status-full { background: var(--success); color: #000; }
+        .status-stop { background: var(--danger); color: #fff; }
+
+        /* LOADER */
         #loader-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .apple-spinner { width: 40px; height: 40px; position: relative; animation: rotate 1s linear infinite; }
         .spinner-blade { position: absolute; left: 44.5%; top: 0; width: 11%; height: 27%; border-radius: 50px; background: #fff; transform-origin: 50% 185%; animation: fade 1s linear infinite; }
@@ -299,8 +243,14 @@
         .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(255,255,255,0.9); color: #000; padding: 10px 24px; border-radius: 30px; font-weight: 600; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 2000; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        .admin-textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; color: white; padding: 15px; outline: none; margin-bottom: 15px; }
-        .action-btn { width: 100%; padding: 18px; background: #fff; color: #000; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .content-text { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.9); margin-bottom: 15px; }
+        .video-box { width: 100%; border-radius: 20px; overflow: hidden; margin-bottom: 20px; background: #000; border: 1px solid var(--glass-border); }
+        video { width: 100%; display: block; }
+        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; width: 100%; padding-bottom: 10px; }
+        .filter-chip { padding: 8px 18px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+        .filter-chip.active { background: rgba(255, 255, 255, 0.15); border: 1px solid #fff; }
+        .num-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .st-work { color: #60a5fa; } .st-wait { color: #facc15; } .st-ok { color: #22c55e; } .st-block { color: #ef4444; }
     </style>
 </head>
 <body>
@@ -331,13 +281,14 @@
             
             <!-- PROFILE (APP) -->
             <div id="profile-section" class="profile-container glass-card" style="display:none;">
+                <div id="status-badge" class="status-badge">Loading...</div>
                 <div id="user-avatar" class="avatar">NP</div>
                 <div class="profile-info">
                     <div id="user-name" class="profile-name">Загрузка...</div>
                     <div class="profile-balance">Баланс: <span id="profile-balance-val">0 ₽</span></div>
                 </div>
                 <div id="admin-btn" onclick="navigateTo('page-admin')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </div>
             </div>
 
@@ -350,7 +301,7 @@
                 </div>
             </div>
 
-            <!-- MAIN MENU (ANIMATED BORDER) -->
+            <!-- MAIN MENU -->
             <div class="nav-row" id="main-nav-row">
                 <div class="anim-border" onclick="navigateTo('page-instructions')" style="cursor: pointer;">
                     <div class="nav-btn-content">
@@ -368,61 +319,40 @@
                 </div>
             </div>
 
-            <div class="news-section" id="news-container">
+            <div class="news-section" id="news-container" style="display:none;">
                 <div class="news-header"><span class="news-title">Новости</span></div>
                 <div class="news-card"><div class="news-content" id="news-text">Загрузка...</div></div>
             </div>
         </div>
 
-        <!-- INSTR PAGE (ANIMATED BORDER) -->
+        <!-- INSTR PAGE -->
         <div id="page-instructions" class="page page-hidden-right">
             <div class="instr-grid">
-                <!-- Rules -->
                 <div class="anim-border full" onclick="navigateTo('page-instr-rules')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">📜</div><div class="menu-text">Правила</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">📜</div><div class="menu-text">Правила</div></div>
                 </div>
-                <!-- Subs -->
                 <div class="anim-border" onclick="navigateTo('page-instr-subs')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">⭐</div><div class="menu-text">Подписки</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">⭐</div><div class="menu-text">Подписки</div></div>
                 </div>
-                <!-- Card -->
                 <div class="anim-border" onclick="navigateTo('page-instr-card')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">💳</div><div class="menu-text">Карта</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">💳</div><div class="menu-text">Карта</div></div>
                 </div>
-                <!-- Limits -->
                 <div class="anim-border full" onclick="navigateTo('page-instr-limits')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">🛡️</div><div class="menu-text">Лимиты</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">🛡️</div><div class="menu-text">Лимиты</div></div>
                 </div>
-                <!-- Balance -->
                 <div class="anim-border" onclick="navigateTo('page-instr-balance')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">💰</div><div class="menu-text">Баланс</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">💰</div><div class="menu-text">Баланс</div></div>
                 </div>
-                <!-- Ref -->
                 <div class="anim-border" onclick="navigateTo('page-instr-ref')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">👥</div><div class="menu-text">Рефералка</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">👥</div><div class="menu-text">Рефералка</div></div>
                 </div>
-                <!-- Add -->
                 <div class="anim-border full" onclick="navigateTo('page-instr-add')" style="cursor: pointer;">
-                    <div class="instr-content">
-                        <div class="menu-item-icon">➕</div><div class="menu-text">Добавить номер</div>
-                    </div>
+                    <div class="instr-content"><div class="menu-item-icon">➕</div><div class="menu-text">Добавить номер</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- OTHER PAGES (STANDARD) -->
+        <!-- OTHER PAGES -->
         <div id="page-menu" class="page page-hidden-right">
             <div class="menu-list">
                 <div class="menu-item" onclick="navigateTo('page-act-nums')"><div class="menu-text">Мои номера</div><div class="chevron">›</div></div>
@@ -576,24 +506,38 @@
         window.addEventListener('resize', resize);
         resize();
 
+        function removeLoader() {
+            const loader = document.getElementById('loader-screen');
+            const app = document.getElementById('app-container');
+            if (loader && loader.style.display !== 'none') {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    app.style.display = 'block';
+                    setTimeout(() => app.style.opacity = '1', 50);
+                }, 400);
+            }
+        }
+
         function parseData() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const raw = params.get('data');
-                if(raw) userData = { ...userData, ...JSON.parse(decodeURIComponent(raw)) };
-                updateUI();
+                if(raw) {
+                    userData = { ...userData, ...JSON.parse(decodeURIComponent(raw)) };
+                }
             } catch(e) { console.error(e); }
+            updateUI();
         }
 
         function updateUI() {
-            const user = tg.initDataUnsafe.user;
+            const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
             let currentUserId = 0;
 
             if(user) {
                 currentUserId = user.id;
                 document.getElementById('user-name').innerText = user.first_name;
-                if(!user.photo_url) document.getElementById('user-avatar').innerText = user.first_name[0];
-                else document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:22px; object-fit:cover;">`;
+                if(user.photo_url) document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:22px; object-fit:cover;">`;
                 
                 document.getElementById('profile-section').style.display = 'flex';
                 document.getElementById('guest-panel').style.display = 'none';
@@ -623,15 +567,7 @@
             document.getElementById('ref-link-val').innerText = `https://t.me/nafuzor_project_bot?start=${userData.uid}`;
 
             updateStatus();
-
-            setTimeout(() => {
-                document.getElementById('loader-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader-screen').style.display = 'none';
-                    document.getElementById('app-container').style.display = 'block';
-                    setTimeout(() => document.getElementById('app-container').style.opacity = '1', 50);
-                }, 400);
-            }, 800);
+            removeLoader();
         }
 
         function updateStatus() {
@@ -738,9 +674,21 @@
             if (body.classList.contains('open')) { body.classList.remove('open'); arrow.innerText = '▼'; } else { body.classList.add('open'); arrow.innerText = '▲'; }
         }
 
+        // AUTO-INIT FORCE
         window.onload = function() {
-            if (typeof parseData === 'function') parseData();
-            setTimeout(handleHash, 100);
+            // Если параметров нет (браузер), сразу инитим
+            if(!window.location.search) {
+                console.log("No params - Browser Mode");
+                userData.uid = 0;
+                updateUI();
+            } else {
+                parseData();
+            }
+            
+            // Предохранитель (если все сломалось)
+            setTimeout(removeLoader, 2000);
+            
+            setTimeout(handleHash, 500);
         };
     </script>
 </body>
